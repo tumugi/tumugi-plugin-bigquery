@@ -1,7 +1,8 @@
-require 'test_helper'
+require_relative '../../test_helper'
+require 'tumugi/plugin/bigquery/version'
 
 class Tumugi::Plugin::BigqueryTest < Test::Unit::TestCase
-  def test_that_it_has_a_version_number
+  test "has a version number" do
     refute_nil ::Tumugi::Plugin::Bigquery::VERSION
   end
 end
