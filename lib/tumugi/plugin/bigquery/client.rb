@@ -1,6 +1,5 @@
 require 'forwardable'
 require 'kura'
-require_relative './extensions/kura/client'
 
 Tumugi::Config.register_section('bigquery', :project_id, :client_email, :private_key)
 
@@ -15,8 +14,7 @@ module Tumugi
                         :tables, :table, :insert_table, :patch_table, :delete_table,
                         :list_tabledata, :insert_tabledata,
                         :insert_job, :query, :load, :extract, :copy,
-                        :job, :cancel_job, :job_finished?, :wait_job,
-                        :job_query_results
+                        :job, :cancel_job, :job_finished?, :wait_job
 
         attr_reader :project_id
 
