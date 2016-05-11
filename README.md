@@ -18,15 +18,46 @@ Or install it yourself as:
 
     $ gem install tumugi-plugin-bigquery
 
-## Usage
 
-TODO: Write usage instructions here
+## Target
+
+### Tumugi::Plugin::BigqueryDatasetTarget
+
+`Tumugi::Plugin::BigqueryDatasetTarget` is target for BigQuery dataset.
+
+#### Tumugi::Plugin::BigqueryTableTarget
+
+`Tumugi::Plugin::BigqueryDatasetTarget` is target for BigQuery table.
+
+## Task
+
+### Tumugi::Plugin::BigqueryQueryTask
+
+`Tumugi::Plugin::BigqueryQueryTask` is task to run `query` and save the result into the table which specified by `Tumugi::Plugin::BigqueryTableTarget`.
+
+Task Plugin ID for DSL is `bigquery_query`.
+
+#### Usage
+
+```rb
+task :task1, type: :bigquery_query do
+  param_set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
+  output target('bigquery_table', dataset_id: 'test', table_id: "dest_#{Time.now.to_i}")
+end
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies.
+Then, export [Google Cloud Platform Service Accounts](https://cloud.google.com/iam/docs/service-accounts) key as following,
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```sh
+export PROJECT_ID="xxx"
+export CLIENT_EMAIL="yyy@yyy.iam.gserviceaccount.com"
+export PRIVATE_KEY="zzz"
+```
+
+Then run `bundle exec rake test` to run the tests.
 
 ## Contributing
 

@@ -17,7 +17,7 @@ module Tumugi
       end
 
       def exist?
-        @client.table(@dataset_id, @table_id, project_id: @project_id)
+        !@client.table(@dataset_id, @table_id, project_id: @project_id).nil?
       end
 
       def table_name

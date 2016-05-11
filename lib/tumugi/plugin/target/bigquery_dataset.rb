@@ -6,6 +6,8 @@ module Tumugi
     class BigqueryDatasetTarget
       Tumugi::Plugin.register_target('bigquery_dataset', self)
 
+      attr_reader :project_id, :dataset_id, :client
+
       def initialize(project_id: nil, dataset_id:, client: nil)
         cfg = Tumugi.config.section('bigquery')
         @project_id = project_id || cfg.project_id
@@ -14,7 +16,7 @@ module Tumugi
       end
 
       def exist?
-        @client.dataset(@dataset_id, project_id: @project_id)
+        !@client.dataset(@dataset_id, project_id: @project_id).nil?
       end
 
       def to_s
