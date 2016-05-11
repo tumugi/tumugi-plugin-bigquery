@@ -20,7 +20,7 @@ module Tumugi
         end
 
         def projects(limit: 1000, &blk)
-          @client.projects(limit, &blk)
+          @client.projects(limit: limit, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
@@ -106,18 +106,18 @@ module Tumugi
         end
 
         def delete_table(dataset_id, table_id, project_id: @project_id, &blk)
-          @client.delete_dataset(dataset_id, project_id: project_id)
+          @client.delete_table(dataset_id, table_id, project_id: project_id)
         rescue Kura::ApiError => e
           process_error(e)
         end
 
         def patch_table(dataset_id, table_id,
-                        project_id: @default_project_id,
+                        project_id: @project_id,
                         expiration_time: :na,
                         friendly_name: :na,
                         description: :na,
                         &blk)
-          @client.patch_table(dataset_id,
+          @client.patch_table(dataset_id, table_id,
                               project_id: project_id,
                               expiration_time: expiration_time,
                               friendly_name: friendly_name,
@@ -136,7 +136,8 @@ module Tumugi
                                   schema: schema,
                                   &blk)
         rescue Kura::ApiError => e
-          process_error(e)        end
+          process_error(e)
+        end
 
         def insert_tabledata(dataset_id, table_id, rows, project_id: @project_id, ignore_unknown_values: false, skip_invalid_rows: false, template_suffix: nil)
           @client.insert_tabledata(dataset_id, table_id, rows,
@@ -264,13 +265,13 @@ module Tumugi
           process_error(e)
         end
 
-        def cancel_job(job, project_id: @project_id, &blk)
+        def cancel_job(job_id, project_id: @project_id, &blk)
           @client.cancel_job(job_id, project_id: project_id, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
 
-        def wait_job(job, timeout=60*10, project_id: @project_id)
+        def wait_job(job, timeout=60*10, project_id: @project_id, &blk)
           @client.wait_job(job, timeout, project_id: project_id, &blk)
         rescue Kura::ApiError => e
           process_error(e)
