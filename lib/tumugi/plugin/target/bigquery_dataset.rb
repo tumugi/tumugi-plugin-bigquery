@@ -16,7 +16,7 @@ module Tumugi
       end
 
       def exist?
-        !@client.dataset(@dataset_id, project_id: @project_id).nil?
+        @client.dataset_exist?(@dataset_id, project_id: @project_id)
       end
 
       def to_s

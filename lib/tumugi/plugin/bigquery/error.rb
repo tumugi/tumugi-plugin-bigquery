@@ -2,6 +2,11 @@ module Tumugi
   module Plugin
     module Bigquery
       class BigqueryError < StandardError
+        def initialize(reason, message)
+          @reason = reason
+          super(message)
+        end
+        attr_reader :reason
       end
     end
   end
