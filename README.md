@@ -33,9 +33,21 @@ Or install it yourself as:
 
 ## Task
 
+### Tumugi::Plugin::BigqueryDatasetTask
+
+`Tumugi::Plugin::BigqueryDatasetTask` is task to create a dataset.
+
+#### Usage
+
+```rb
+task :task1, type: :bigquery_dataset do
+  param_set :dataset_id, 'test'
+end
+```
+
 ### Tumugi::Plugin::BigqueryQueryTask
 
-`Tumugi::Plugin::BigqueryQueryTask` is task to run `query` and save the result into the table which specified by `Tumugi::Plugin::BigqueryTableTarget`.
+`Tumugi::Plugin::BigqueryQueryTask` is task to run `query` and save the result into the table which specified by parameter.
 
 Task Plugin ID for DSL is `bigquery_query`.
 
@@ -44,7 +56,8 @@ Task Plugin ID for DSL is `bigquery_query`.
 ```rb
 task :task1, type: :bigquery_query do
   param_set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
-  output target('bigquery_table', dataset_id: 'test', table_id: "dest_#{Time.now.to_i}")
+  param_set :dataset_id, 'test'
+  param_set :table_id, "dest_#{Time.now.to_i}"
 end
 ```
 

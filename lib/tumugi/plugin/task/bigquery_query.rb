@@ -1,6 +1,4 @@
 require 'tumugi'
-
-require_relative '../bigquery/client'
 require_relative '../target/bigquery_table'
 
 module Tumugi
@@ -9,6 +7,13 @@ module Tumugi
       Tumugi::Plugin.register_task('bigquery_query', self)
 
       param :query, type: :string, required: true
+      param :project_id, type: :string
+      param :dataset_id, type: :string, required: true
+      param :table_id, type: :string, require: true
+
+      def output
+        Tumugi::Plugin::BigqueryTableTarget.new(project_id: project_id, dataset_id: dataset_id, table_id: table_id)
+      end
 
       def run
         log "Launching Query"
