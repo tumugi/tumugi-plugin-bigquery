@@ -1,7 +1,7 @@
 module Tumugi
   module Plugin
     module Bigquery
-      class BigqueryError < StandardError
+      class BigqueryError < Tumugi::TumugiError
         def initialize(reason, message)
           @reason = reason
           super(message)

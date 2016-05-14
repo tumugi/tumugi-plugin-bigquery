@@ -7,12 +7,13 @@ module Tumugi
       Tumugi::Plugin.register_task('bigquery_query', self)
 
       param :query, type: :string, required: true
-      param :project_id, type: :string
-      param :dataset_id, type: :string, required: true
-      param :table_id, type: :string, require: true
+      param :project, type: :string
+      param :dataset, type: :string, required: true
+      param :table, type: :string, require: true
+      param :wait, type: :int, deafult: 60
 
       def output
-        Tumugi::Plugin::BigqueryTableTarget.new(project_id: project_id, dataset_id: dataset_id, table_id: table_id)
+        Tumugi::Plugin::BigqueryTableTarget.new(project_id: project, dataset_id: dataset, table_id: table)
       end
 
       def run
@@ -20,8 +21,10 @@ module Tumugi
         log "Query: #{query}"
         log "Query destination: #{output}"
 
+        sleep 5
+
         bq_client = output.client
-        bq_client.query(query, dataset_id: output.dataset_id, table_id: output.table_id, wait: 120)
+        bq_client.query(query, project_id: project, dataset_id: output.dataset_id, table_id: output.table_id, wait: wait)
       end
     end
   end

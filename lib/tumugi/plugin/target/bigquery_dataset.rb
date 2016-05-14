@@ -9,10 +9,9 @@ module Tumugi
       attr_reader :project_id, :dataset_id, :client
 
       def initialize(project_id: nil, dataset_id:, client: nil)
-        cfg = Tumugi.config.section('bigquery')
-        @project_id = project_id || cfg.project_id
+        @project_id = project_id
         @dataset_id = dataset_id
-        @client = client || Tumugi::Plugin::Bigquery::Client.new(project_id: @project_id)
+        @client = client || Tumugi::Plugin::Bigquery::Client.new(project_id: project_id)
       end
 
       def exist?

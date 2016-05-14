@@ -1,7 +1,7 @@
 require 'kura'
 require_relative './error'
 
-Tumugi::Config.register_section('bigquery', :project_id, :client_email, :private_key)
+Tumugi::Config.register_section('bigquery', :project_id, :client_email, :private_key, :private_key_file)
 
 module Tumugi
   module Plugin
@@ -25,43 +25,43 @@ module Tumugi
           process_error(e)
         end
 
-        def datasets(project_id: @project_id, all: false, limit: 1000, &blk)
-          @client.datasets(project_id: project_id, all: all, limit: limit, &blk)
+        def datasets(project_id: nil, all: false, limit: 1000, &blk)
+          @client.datasets(project_id: project_id || @project_id, all: all, limit: limit, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
 
-        def dataset(dataset_id, project_id: @project_id, &blk)
-          @client.dataset(dataset_id, project_id: project_id, &blk)
+        def dataset(dataset_id, project_id: nil, &blk)
+          @client.dataset(dataset_id, project_id: project_id || @project_id, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
 
-        def dataset_exist?(dataset_id, project_id: @project_id)
-          !@client.dataset(dataset_id, project_id: project_id).nil?
+        def dataset_exist?(dataset_id, project_id: nil)
+          !@client.dataset(dataset_id, project_id: project_id || @project_id).nil?
         rescue Kura::ApiError => e
           process_error(e)
         end
 
-        def insert_dataset(dataset_id, project_id: @project_id, &blk)
-          @client.insert_dataset(dataset_id, project_id: project_id, &blk)
+        def insert_dataset(dataset_id, project_id: nil, &blk)
+          @client.insert_dataset(dataset_id, project_id: project_id || @project_id, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
 
-        def delete_dataset(dataset_id, project_id: @project_id, delete_contents: true, &blk)
-          @client.delete_dataset(dataset_id, project_id: project_id, delete_contents: delete_contents, &blk)
+        def delete_dataset(dataset_id, project_id: nil, delete_contents: true, &blk)
+          @client.delete_dataset(dataset_id, project_id: project_id || @project_id, delete_contents: delete_contents, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
 
-        def patch_dataset(dataset_id, project_id: @project_id,
+        def patch_dataset(dataset_id, project_id: nil,
                           access: nil,
                           description: :na,
                           default_table_expiration_ms: :na,
                           friendly_name: :na,
                           &blk)
-          @client.patch_dataset(dataset_id, project_id: project_id,
+          @client.patch_dataset(dataset_id, project_id: project_id || @project_id,
                                 access: access,
                                 description: description,
                                 default_table_expiration_ms: default_table_expiration_ms,
@@ -71,20 +71,20 @@ module Tumugi
           process_error(e)
         end
 
-        def tables(dataset_id, project_id: @project_id, limit: 1000, &blk)
-          @client.tables(dataset_id, project_id: project_id, limit: 1000, &blk)
+        def tables(dataset_id, project_id: nil, limit: 1000, &blk)
+          @client.tables(dataset_id, project_id: project_id || @project_id, limit: 1000, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
 
-        def table_exist?(dataset_id, table_id, project_id: @project_id)
-          !@client.table(dataset_id, table_id, project_id: project_id).nil?
+        def table_exist?(dataset_id, table_id, project_id: nil)
+          !@client.table(dataset_id, table_id, project_id: project_id || @project_id).nil?
         rescue Kura::ApiError => e
           process_error(e)
         end
 
         def insert_table(dataset_id, table_id,
-                          project_id: @project_id,
+                          project_id: nil,
                           expiration_time: nil,
                           friendly_name: nil,
                           schema: nil,
@@ -93,7 +93,7 @@ module Tumugi
                           external_data_configuration: nil,
                           &blk)
           @client.insert_table(dataset_id, table_id,
-                                project_id: project_id,
+                                project_id: project_id || @project_id,
                                 expiration_time: expiration_time,
                                 friendly_name: friendly_name,
                                 schema: schema,
@@ -105,20 +105,20 @@ module Tumugi
           process_error(e)
         end
 
-        def delete_table(dataset_id, table_id, project_id: @project_id, &blk)
-          @client.delete_table(dataset_id, table_id, project_id: project_id)
+        def delete_table(dataset_id, table_id, project_id: nil, &blk)
+          @client.delete_table(dataset_id, table_id, project_id: project_id || @project_id, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
 
         def patch_table(dataset_id, table_id,
-                        project_id: @project_id,
+                        project_id: nil,
                         expiration_time: :na,
                         friendly_name: :na,
                         description: :na,
                         &blk)
           @client.patch_table(dataset_id, table_id,
-                              project_id: project_id,
+                              project_id: project_id || @project_id,
                               expiration_time: expiration_time,
                               friendly_name: friendly_name,
                               description: description,
@@ -127,9 +127,9 @@ module Tumugi
           process_error(e)
         end
 
-        def list_tabledata(dataset_id, table_id, project_id: @project_id, start_index: 0, max_result: 100, page_token: nil, schema: nil, &blk)
+        def list_tabledata(dataset_id, table_id, project_id: nil, start_index: 0, max_result: 100, page_token: nil, schema: nil, &blk)
           @client.list_tabledata(dataset_id, table_id,
-                                  project_id: project_id,
+                                  project_id: project_id || @project_id,
                                   start_index: start_index,
                                   max_result: max_result,
                                   page_token: page_token,
@@ -139,9 +139,9 @@ module Tumugi
           process_error(e)
         end
 
-        def insert_tabledata(dataset_id, table_id, rows, project_id: @project_id, ignore_unknown_values: false, skip_invalid_rows: false, template_suffix: nil)
+        def insert_tabledata(dataset_id, table_id, rows, project_id: nil, ignore_unknown_values: false, skip_invalid_rows: false, template_suffix: nil)
           @client.insert_tabledata(dataset_id, table_id, rows,
-                                  project_id: project_id,
+                                  project_id: project_id || @project_id,
                                   ignore_unknown_values: ignore_unknown_values,
                                   skip_invalid_rows: skip_invalid_rows,
                                   template_suffix: template_suffix)
@@ -149,8 +149,8 @@ module Tumugi
           process_error(e)
         end
 
-        def insert_job(configuration, job_id: nil, project_id: @project_id, media: nil, wait: nil, &blk)
-          @client.insert_job(configuration, job_id: job_id, project_id: project_id, media: media, wait: wait, &blk)
+        def insert_job(configuration, job_id: nil, project_id: nil, media: nil, wait: nil, &blk)
+          @client.insert_job(configuration, job_id: job_id, project_id: project_id || @project_id, media: media, wait: wait, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
@@ -162,7 +162,7 @@ module Tumugi
                   priority: "INTERACTIVE",
                   use_query_cache: true,
                   user_defined_function_resources: nil,
-                  project_id: @project_id,
+                  project_id: nil,
                   job_id: nil,
                   wait: nil,
                   dry_run: false,
@@ -174,8 +174,8 @@ module Tumugi
                         priority: priority,
                         use_query_cache: use_query_cache,
                         user_defined_function_resources: user_defined_function_resources,
-                        project_id: project_id,
-                        job_project_id: project_id,
+                        project_id: project_id || @project_id,
+                        job_project_id: project_id || @project_id,
                         job_id: job_id,
                         wait: wait,
                         dry_run: dry_run,
@@ -191,7 +191,7 @@ module Tumugi
                  allow_quoted_newlines: false,
                  quote: '"', skip_leading_rows: 0,
                  source_format: "CSV",
-                 project_id: @project_id,
+                 project_id: nil,
                  job_id: nil,
                  file: nil, wait: nil,
                  dry_run: false,
@@ -203,8 +203,8 @@ module Tumugi
                        allow_quoted_newlines: allow_quoted_newlines,
                        quote: quote, skip_leading_rows: skip_leading_rows,
                        source_format: source_format,
-                       project_id: project_id,
-                       job_project_id: project_id,
+                       project_id: project_id || @project_id,
+                       job_project_id: project_id || @project_id,
                        job_id: job_id,
                        file: file, wait: wait,
                        dry_run: false,
@@ -218,7 +218,7 @@ module Tumugi
                     destination_format: "CSV",
                     field_delimiter: ",",
                     print_header: true,
-                    project_id: @project_id,
+                    project_id: nil,
                     job_id: nil,
                     wait: nil,
                     dry_run: false,
@@ -228,8 +228,8 @@ module Tumugi
                           destination_format: destination_format,
                           field_delimiter: field_delimiter,
                           print_header: print_header,
-                          project_id: project_id,
-                          job_project_id: project_id,
+                          project_id: project_id || @project_id,
+                          job_project_id: project_id || @project_id,
                           job_id: job_id,
                           wait: wait,
                           dry_run: dry_run,
@@ -240,17 +240,17 @@ module Tumugi
 
         def copy(src_dataset_id, src_table_id, dest_dataset_id, dest_table_id,
                  mode: :truncate,
-                 src_project_id: @project_id,
-                 dest_project_id: @project_id,
+                 src_project_id: nil,
+                 dest_project_id: nil,
                  job_id: nil,
                  wait: nil,
                  dry_run: false,
                  &blk)
           @client.copy(src_dataset_id, src_table_id, dest_dataset_id, dest_table_id,
                        mode: mode,
-                       src_project_id: src_project_id,
-                       dest_project_id: dest_project_id,
-                       job_project_id: src_project_id,
+                       src_project_id: src_project_id || @project_id,
+                       dest_project_id: dest_project_id || @project_id,
+                       job_project_id: src_project_id || @project_id,
                        job_id: job_id,
                        wait: wait,
                        dry_run: dry_run,
@@ -259,20 +259,20 @@ module Tumugi
           process_error(e)
         end
 
-        def job(job_id, project_id: @project_id, &blk)
-          @client.job(job_id, project_id: project_id, &blk)
+        def job(job_id, project_id: nil, &blk)
+          @client.job(job_id, project_id: project_id || @project_id, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
 
-        def cancel_job(job_id, project_id: @project_id, &blk)
-          @client.cancel_job(job_id, project_id: project_id, &blk)
+        def cancel_job(job_id, project_id: nil, &blk)
+          @client.cancel_job(job_id, project_id: project_id || @project_id, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
 
-        def wait_job(job, timeout=60*10, project_id: @project_id, &blk)
-          @client.wait_job(job, timeout, project_id: project_id, &blk)
+        def wait_job(job, timeout=60*10, project_id: nil, &blk)
+          @client.wait_job(job, timeout, project_id: project_id || @project_id, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
