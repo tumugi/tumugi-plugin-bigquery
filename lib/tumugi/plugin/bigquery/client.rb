@@ -72,7 +72,7 @@ module Tumugi
         end
 
         def tables(dataset_id, project_id: nil, limit: 1000, &blk)
-          @client.tables(dataset_id, project_id: project_id || @project_id, limit: 1000, &blk)
+          @client.tables(dataset_id, project_id: project_id || @project_id, limit: limit, &blk)
         rescue Kura::ApiError => e
           process_error(e)
         end
@@ -207,7 +207,7 @@ module Tumugi
                        job_project_id: project_id || @project_id,
                        job_id: job_id,
                        file: file, wait: wait,
-                       dry_run: false,
+                       dry_run: dry_run,
                        &blk)
         rescue Kura::ApiError => e
           process_error(e)
