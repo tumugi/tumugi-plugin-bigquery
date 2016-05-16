@@ -1,4 +1,4 @@
-require_relative '../../test_helper'
+require_relative '../test_helper'
 require 'tumugi/plugin/bigquery/version'
 
 class Tumugi::Plugin::BigqueryTest < Test::Unit::TestCase

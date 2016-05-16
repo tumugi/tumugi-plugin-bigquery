@@ -250,7 +250,7 @@ module Tumugi
                        mode: mode,
                        src_project_id: src_project_id || @project_id,
                        dest_project_id: dest_project_id || @project_id,
-                       job_project_id: src_project_id || @project_id,
+                       job_project_id: dest_project_id || @project_id,
                        job_id: job_id,
                        wait: wait,
                        dry_run: dry_run,

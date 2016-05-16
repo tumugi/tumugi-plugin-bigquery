@@ -6,5 +6,5 @@ task :task1 do
 end
 
 task :task2, type: :bigquery_dataset do
-  param_set :dataset, 'test'
+  param_set :dataset_id, 'test'
 end

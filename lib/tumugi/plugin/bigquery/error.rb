@@ -1,3 +1,5 @@
+require 'tumugi/error'
+
 module Tumugi
   module Plugin
     module Bigquery

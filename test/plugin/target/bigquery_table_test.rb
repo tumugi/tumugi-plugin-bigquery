@@ -1,7 +1,7 @@
-require_relative '../../../test_helper'
+require_relative '../../test_helper'
 require 'tumugi/plugin/target/bigquery_table'
 
-class Tumugi::Plugin::BigqueryTableTest < Test::Unit::TestCase
+class Tumugi::Plugin::BigqueryTableTargetTest < Test::Unit::TestCase
   include Tumugi::Plugin::BigqueryTestHelper
 
   test "#initialize" do

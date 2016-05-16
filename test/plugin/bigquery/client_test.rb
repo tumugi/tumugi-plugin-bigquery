@@ -1,4 +1,4 @@
-require_relative '../../../test_helper'
+require_relative '../../test_helper'
 require 'tumugi/plugin/bigquery/client'
 
 class Tumugi::Plugin::Bigquery::ClientTest < Test::Unit::TestCase
