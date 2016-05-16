@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tumugi/tumugi-plugin-bigquery.svg?branch=master)](https://travis-ci.org/tumugi/tumugi-plugin-bigquery) [![Code Climate](https://codeclimate.com/github/tumugi/tumugi-plugin-bigquery/badges/gpa.svg)](https://codeclimate.com/github/tumugi/tumugi-plugin-bigquery) [![Coverage Status](https://coveralls.io/repos/github/tumugi/tumugi-plugin-bigquery/badge.svg?branch=master)](https://coveralls.io/github/tumugi/tumugi-plugin-bigquery)
+[![Build Status](https://travis-ci.org/tumugi/tumugi-plugin-bigquery.svg?branch=master)](https://travis-ci.org/tumugi/tumugi-plugin-bigquery) [![Code Climate](https://codeclimate.com/github/tumugi/tumugi-plugin-bigquery/badges/gpa.svg)](https://codeclimate.com/github/tumugi/tumugi-plugin-bigquery) [![Coverage Status](https://coveralls.io/repos/github/tumugi/tumugi-plugin-bigquery/badge.svg?branch=master)](https://coveralls.io/github/tumugi/tumugi-plugin-bigquery)  [![Gem Version](https://badge.fury.io/rb/tumugi-plugin-bigquery.svg)](https://badge.fury.io/rb/tumugi-plugin-bigquery)
 
 # tumugi-plugin-bigquery
 
