@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tumugi/tumugi-plugin-bigquery.svg?branch=master)](https://travis-ci.org/tumugi/tumugi-plugin-bigquery) [![Code Climate](https://codeclimate.com/github/tumugi/tumugi-plugin-bigquery/badges/gpa.svg)](https://codeclimate.com/github/tumugi/tumugi-plugin-bigquery) [![Coverage Status](https://coveralls.io/repos/github/tumugi/tumugi-plugin-bigquery/badge.svg?branch=master)](https://coveralls.io/github/tumugi/tumugi-plugin-bigquery)
+
 # tumugi-plugin-bigquery
 
 tumugi-plugin-bigquery is a plugin for integrate [Google BigQuery](https://cloud.google.com/bigquery/) and [Tumugi](https://github.com/tumugi/tumugi).
@@ -12,21 +14,107 @@ gem 'tumugi-plugin-bigquery'
 
 And then execute:
 
-    $ bundle
+```sh
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install tumugi-plugin-bigquery
+```sb
+$ gem install tumugi-plugin-bigquery
+```
 
-## Usage
+## Target
 
-TODO: Write usage instructions here
+### Tumugi::Plugin::BigqueryDatasetTarget
+
+`Tumugi::Plugin::BigqueryDatasetTarget` is target for BigQuery dataset.
+
+#### Tumugi::Plugin::BigqueryTableTarget
+
+`Tumugi::Plugin::BigqueryDatasetTarget` is target for BigQuery table.
+
+## Task
+
+### Tumugi::Plugin::BigqueryDatasetTask
+
+`Tumugi::Plugin::BigqueryDatasetTask` is task to create a dataset.
+
+#### Usage
+
+```rb
+task :task1, type: :bigquery_dataset do
+  param_set :dataset_id, 'test'
+end
+```
+
+### Tumugi::Plugin::BigqueryQueryTask
+
+`Tumugi::Plugin::BigqueryQueryTask` is task to run `query` and save the result into the table which specified by parameter.
+
+#### Usage
+
+```rb
+task :task1, type: :bigquery_query do
+  param_set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
+  param_set :dataset_id, 'test'
+  param_set :table_id, "dest_table#{Time.now.to_i}"
+end
+```
+
+### Tumugi::Plugin::BigqueryCopyTask
+
+`Tumugi::Plugin::BigqueryCopyTask` is task to copy table which specified by parameter.
+
+#### Usage
+
+```rb
+task :task1, type: :bigquery_copy do
+  param_set :src_dataset_id, 'test'
+  param_set :src_table_id, 'src_table'
+  param_set :dest_dataset_id, 'test'
+  param_set :dest_table_id, 'dest_table'
+end
+```
+
+### Config Section
+
+tumugi-plugin-bigquery provide config section named "bigquery" which can specified BigQuery autenticaion info.
+
+#### Authenticate by client_email and private_key
+
+```rb
+Tumugi.config do |config|
+  config.section("bigquery") do |section|
+    section.project_id = "xxx"
+    section.client_email = "yyy@yyy.iam.gserviceaccount.com"
+    section.private_key = "zzz"
+  end
+end
+```
+
+#### Authenticate by JSON key file
+
+```rb
+Tumugi.config do |config|
+  config.section("bigquery") do |section|
+    section.private_key_file = "/path/to/key.json"
+  end
+end
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies.
+Then, export [Google Cloud Platform Service Accounts](https://cloud.google.com/iam/docs/service-accounts) key as following,
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```sh
+export PROJECT_ID="xxx"
+export CLIENT_EMAIL="yyy@yyy.iam.gserviceaccount.com"
+export PRIVATE_KEY="zzz"
+```
+
+Then run `bundle exec rake test` to run the tests.
 
 ## Contributing
 
