@@ -49,10 +49,10 @@ def credential
   }
 end
 
-Tumugi.config do |c|
-  c.section('bigquery') do |s|
-    s.project_id = credential[:project_id]
-    s.client_email = credential[:client_email]
-    s.private_key = credential[:private_key]
+Tumugi.configure do |config|
+  config.section('bigquery') do |section|
+    section.project_id = credential[:project_id]
+    section.client_email = credential[:client_email]
+    section.private_key = credential[:private_key]
   end
 end

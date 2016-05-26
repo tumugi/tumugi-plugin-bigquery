@@ -9,6 +9,7 @@ class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
     @klass.param_set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
     @klass.param_set :dataset_id, Tumugi::Plugin::BigqueryTestHelper::TEST_DATASETS[0]
     @klass.param_set :table_id, 'test'
+    @klass.param_set :project_id, ENV['PROJECT_ID']
   end
 
   sub_test_case "parameters" do
@@ -30,7 +31,7 @@ class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
       params.each do |param|
         @klass.param_set(param, nil)
       end
-      assert_raise(Tumugi::Parameter::ParameterError) do
+      assert_raise(Tumugi::ParameterError) do
         @klass.new
       end
     end
