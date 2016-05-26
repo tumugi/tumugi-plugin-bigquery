@@ -96,7 +96,7 @@ end
 #### Authenticate by JSON key file
 
 ```rb
-Tumugi.config do |config|
+Tumugi.configure do |config|
   config.section("bigquery") do |section|
     section.private_key_file = "/path/to/key.json"
   end
