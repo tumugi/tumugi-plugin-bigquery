@@ -68,12 +68,32 @@ end
 
 #### Usage
 
+Copy `test.src_table` to `test.dest_table`.
+
 ```rb
 task :task1, type: :bigquery_copy do
   param_set :src_dataset_id, 'test'
   param_set :src_table_id, 'src_table'
   param_set :dest_dataset_id, 'test'
   param_set :dest_table_id, 'dest_table'
+end
+```
+
+### Tumugi::Plugin::BigqueryLoadTask
+
+`Tumugi::Plugin::BigqueryLoadTask` is task to load structured data from GCS into BigQuery.
+
+#### Usage
+
+Load `gs://test_bucket/load_data.csv` into `dest_project:dest_dataset.dest_table`
+
+```rb
+task :task1, type: :bigquery_load do
+  param_set :bucket, 'test_bucket'
+  param_set :key, 'load_data.csv'
+  param_set :project_id, 'dest_project'
+  param_set :datset_id, 'dest_dataset'
+  param_set :table_id, 'dest_table'
 end
 ```
 
@@ -84,7 +104,7 @@ tumugi-plugin-bigquery provide config section named "bigquery" which can specifi
 #### Authenticate by client_email and private_key
 
 ```rb
-Tumugi.config do |config|
+Tumugi.configure do |config|
   config.section("bigquery") do |section|
     section.project_id = "xxx"
     section.client_email = "yyy@yyy.iam.gserviceaccount.com"
