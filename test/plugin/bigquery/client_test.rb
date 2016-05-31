@@ -165,7 +165,7 @@ class Tumugi::Plugin::Bigquery::ClientTest < Test::Unit::TestCase
   test "#load" do
     any_instance_of(Kura::Client) do |klass|
       mock(klass).load(TEST_DATASETS[0], 'test', 'gs://tumugi-plugin-bigquery/test.csv',
-                        schema: nil, delimiter: ",", field_delimiter: ",", mode: :append,
+                        schema: nil, field_delimiter: ",", mode: :append,
                         allow_jagged_rows: false, max_bad_records: 0,
                         ignore_unknown_values: false,
                         allow_quoted_newlines: false,
