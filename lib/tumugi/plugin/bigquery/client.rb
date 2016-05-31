@@ -13,7 +13,7 @@ module Tumugi
           config = Tumugi.config.section('bigquery')
           @project_id = project_id || config.project_id
           @client_email = client_email || config.client_email
-          @private_key = private_key || config.private_key
+          @private_key = private_key || config.private_key || config.private_key_file
           @client = Kura.client(@project_id, @client_email, @private_key)
         rescue Kura::ApiError => e
           process_error(e)
