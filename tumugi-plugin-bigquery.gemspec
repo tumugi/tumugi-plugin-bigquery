@@ -22,7 +22,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "tumugi", ">= 0.5.1"
   spec.add_runtime_dependency "kura", "~> 0.2.17"
-  spec.add_runtime_dependency "tumugi-plugin-google_cloud_storage", "~> 0.1.0"
 
   spec.add_development_dependency 'bundler', '~> 1.11'
   spec.add_development_dependency 'rake', '~> 10.0'
@@ -30,4 +29,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'test-unit-rr'
   spec.add_development_dependency 'coveralls'
   spec.add_development_dependency 'github_changelog_generator'
+  spec.add_development_dependency 'tumugi-plugin-google_cloud_storage'
 end

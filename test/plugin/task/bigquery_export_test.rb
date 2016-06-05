@@ -1,14 +1,15 @@
 require_relative '../../test_helper'
 require 'tumugi/plugin/task/bigquery_export'
+require 'tumugi/plugin/target/google_cloud_storage_file'
+require 'tumugi/plugin/target/local_file'
 
 class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
   include Tumugi::Plugin::BigqueryTestHelper
 
   setup do
     @klass = Class.new(Tumugi::Plugin::BigqueryExportTask)
-    @klass.param_set :bucket, 'tumugi-plugin-bigquery'
-    @klass.param_set :key, 'export/test.csv.zip'
     @klass.param_set :project_id, 'bigquery-public-data'
+    @klass.param_set :job_project_id, 'tumugi-plugin-bigquery'
     @klass.param_set :dataset_id, 'samples'
     @klass.param_set :table_id, 'shakespeare'
     @klass.param_set :compression, 'GZIP'
@@ -17,18 +18,16 @@ class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
   sub_test_case "parameters" do
     test "should set correctly" do
       task = @klass.new
-      assert_equal('tumugi-plugin-bigquery', task.bucket)
-      assert_equal('export/test.csv.zip', task.key)
       assert_equal('bigquery-public-data', task.project_id)
+      assert_equal('tumugi-plugin-bigquery', task.job_project_id)
       assert_equal('samples', task.dataset_id)
       assert_equal('shakespeare', task.table_id)
       assert_equal('GZIP', task.compression)
       assert_equal(120, task.wait)
+      assert_equal(10000, task.page_size)
     end
 
     data({
-      "bucket" => [:bucket],
-      "key" => [:key],
       "dataset_id" => [:dataset_id],
       "table_id" => [:table_id],
     })
@@ -42,15 +41,13 @@ class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
     end
   end
 
-  test "#output" do
+  test "export to Google Cloud Storage" do
     task = @klass.new
-    output = task.output
-    assert_true(output.is_a? Tumugi::Plugin::GoogleCloudStorageFileTarget)
-    assert_equal('gs://tumugi-plugin-bigquery/export/test.csv.zip', output.path)
-  end
-
-  test "#run" do
-    task = @klass.new
+    task.instance_eval do
+      def output
+        Tumugi::Plugin::GoogleCloudStorageFileTarget.new(bucket: 'tumugi-plugin-bigquery', key: 'export/test.csv.zip')
+      end
+    end
     output = task.output
     task.run
     output.open("r") do |f|
@@ -66,6 +63,34 @@ class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
           if s.start_with?("in,")
             in_row = s
           end
+        end
+      end
+      assert_equal(164657, count)
+      assert_equal("word,word_count,corpus,corpus_date\n", header)
+      assert_equal("in,255,kinghenryviii,1612\n", in_row)
+    end
+  end
+
+  test "export to local file" do
+    task = @klass.new
+    task.instance_eval do
+      def output
+        Tumugi::Plugin::LocalFileTarget.new('tmp/export.csv')
+      end
+    end
+    output = task.output
+    task.run
+    output.open("r") do |f|
+      count = 0
+      header = ''
+      in_row = ''
+      while s = f.gets
+        if count == 0
+          header = s
+        end
+        count += 1
+        if s.start_with?("in,")
+          in_row = s
         end
       end
       assert_equal(164657, count)

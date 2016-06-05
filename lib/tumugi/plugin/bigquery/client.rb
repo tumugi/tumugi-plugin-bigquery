@@ -88,6 +88,12 @@ module Tumugi
           process_error(e)
         end
 
+        def table(dataset_id, table_id, project_id: nil)
+          @client.table(dataset_id, table_id, project_id: project_id || @project_id)
+        rescue Kura::ApiError => e
+          process_error(e)
+        end
+
         def table_exist?(dataset_id, table_id, project_id: nil)
           !@client.table(dataset_id, table_id, project_id: project_id || @project_id).nil?
         rescue Kura::ApiError => e
@@ -304,7 +310,7 @@ module Tumugi
         private
 
         def process_error(e)
-          raise Tumugi::Plugin::Bigquery::BigqueryError.new(e.reason, e.message)
+          raise Tumugi::Plugin::Bigquery::BigqueryError.new(e.message, e.reason)
         end
       end
     end
