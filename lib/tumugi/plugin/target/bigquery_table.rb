@@ -18,7 +18,7 @@ module Tumugi
         @project_id = project_id || cfg.project_id
         @dataset_id = dataset_id
         @table_id = table_id
-        @client = client || Tumugi::Plugin::Bigquery::Client.new(project_id: @project_id)
+        @client = client || Tumugi::Plugin::Bigquery::Client.new(cfg.to_h.merge(project_id: @project_id))
         @table = Tumugi::Plugin::Bigquery::Table.new(project_id: @project_id, dataset_id: @dataset_id, table_id: @table_id)
       end
 
