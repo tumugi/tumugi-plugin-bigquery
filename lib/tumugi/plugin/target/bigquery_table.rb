@@ -19,7 +19,7 @@ module Tumugi
         @dataset_id = dataset_id
         @table_id = table_id
         @client = client || Tumugi::Plugin::Bigquery::Client.new(cfg.to_h.merge(project_id: @project_id))
-        @table = Tumugi::Plugin::Bigquery::Table.new(project_id: @project_id, dataset_id: @dataset_id, table_id: @table_id)
+        @table = Tumugi::Plugin::Bigquery::Table.new(project_id: @client.project_id, dataset_id: @dataset_id, table_id: @table_id)
       end
 
       def exist?
