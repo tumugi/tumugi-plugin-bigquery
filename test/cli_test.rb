@@ -1,4 +1,5 @@
 require_relative './test_helper'
+require 'tumugi/cli'
 
 class Tumugi::Plugin::Bigquery::CLITest < Test::Unit::TestCase
   examples = {
@@ -7,12 +8,12 @@ class Tumugi::Plugin::Bigquery::CLITest < Test::Unit::TestCase
     'query' => ['query.rb', 'task1'],
   }
 
-  def exec(file, task, options)
-    system("bundle exec tumugi run -f ./examples/#{file} #{options} #{task}")
+  def invoke(file, task, options)
+    Tumugi::CLI.new.invoke(:run_, [task], options.merge(file: "./examples/#{file}", quiet: true))
   end
 
   data(examples)
   test 'success' do |(file, task)|
-    assert_true(exec(file, task, "-w 4 --quiet -c ./examples/tumugi_config_example.rb"))
+    assert_true(invoke(file, task, worker: 4, config: "./examples/tumugi_config_example.rb"))
   end
 end
