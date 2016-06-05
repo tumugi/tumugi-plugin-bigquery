@@ -1,4 +1,5 @@
 require 'kura'
+require 'json'
 require_relative './error'
 
 Tumugi::Config.register_section('bigquery', :project_id, :client_email, :private_key, :private_key_file)
@@ -9,12 +10,22 @@ module Tumugi
       class Client
         attr_reader :project_id
 
-        def initialize(project_id: nil, client_email: nil, private_key: nil)
-          config = Tumugi.config.section('bigquery')
-          @project_id = project_id || config.project_id
-          @client_email = client_email || config.client_email
-          @private_key = private_key || config.private_key || config.private_key_file
-          @client = Kura.client(@project_id, @client_email, @private_key)
+        def initialize(project_id: nil, client_email: nil, private_key: nil, private_key_file: nil)
+          @project_id = project_id
+
+          if client_email.nil? && private_key.nil?
+            if private_key_file.nil?
+              raise Tumugi::Plugin::Bigquery::BigqueryError.new("You must provide 'private_key_file'", "No authentication info")
+            else
+              @client = Kura.client(private_key_file)
+              if @project_id.nil?
+                key = JSON.parse(File.read(private_key_file))
+                @project_id = key['project_id']
+              end
+            end
+          else
+            @client = Kura.client(@project_id, client_email, private_key)
+          end
         rescue Kura::ApiError => e
           process_error(e)
         end

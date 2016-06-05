@@ -8,11 +8,26 @@ class Tumugi::Plugin::Bigquery::ClientTest < Test::Unit::TestCase
     @client = Tumugi::Plugin::Bigquery::Client.new(credential)
   end
 
-  test "#initialize" do
-    stub.proxy(Kura).client { |o| o }
-    client = Tumugi::Plugin::Bigquery::Client.new(credential)
-    assert_equal(credential[:project_id], client.project_id)
-    assert_received(Kura) { |o| o.client(credential[:project_id], credential[:client_email], credential[:private_key]) }
+  sub_test_case "#initialize" do
+    test 'auth by arguments' do
+      stub(Kura).client { |o| o }
+      client = Tumugi::Plugin::Bigquery::Client.new(credential)
+      assert_equal(credential[:project_id], client.project_id)
+      assert_received(Kura) { |o| o.client(credential[:project_id], credential[:client_email], credential[:private_key]) }
+    end
+
+    test 'auth by private key file' do
+      stub(Kura).client { |o| o }
+      client = Tumugi::Plugin::Bigquery::Client.new(private_key_file: 'test/data/key.json')
+      assert_equal('myproject', client.project_id)
+      assert_received(Kura) { |o| o.client('test/data/key.json') }
+    end
+
+    test 'raise error when no auth info' do
+      assert_raise(Tumugi::Plugin::Bigquery::BigqueryError) do
+        Tumugi::Plugin::Bigquery::Client.new
+      end
+    end
   end
 
   test "#projects" do
