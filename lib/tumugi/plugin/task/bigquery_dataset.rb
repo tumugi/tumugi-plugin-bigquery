@@ -10,7 +10,7 @@ module Tumugi
       param :dataset_id, type: :string, required: true
 
       def output
-        Tumugi::Plugin::BigqueryDatasetTarget.new(project_id: project_id, dataset_id: dataset_id)
+        @output ||= Tumugi::Plugin::BigqueryDatasetTarget.new(project_id: project_id, dataset_id: dataset_id)
       end
 
       def run

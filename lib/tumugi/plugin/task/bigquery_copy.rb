@@ -15,9 +15,11 @@ module Tumugi
       param :wait, type: :int, default: 60
 
       def output
+        return @output if @output
+        
         opts = { dataset_id: dest_dataset_id, table_id: dest_table_id }
         opts[:project_id] = dest_project_id if dest_project_id
-        Tumugi::Plugin::BigqueryTableTarget.new(opts)
+        @output = Tumugi::Plugin::BigqueryTableTarget.new(opts)
       end
 
       def run

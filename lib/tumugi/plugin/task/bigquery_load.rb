@@ -25,9 +25,11 @@ module Tumugi
       param :wait, type: :integer, default: 60
 
       def output
+        return @output if @output
+
         opts = { dataset_id: dataset_id, table_id: table_id }
         opts[:project_id] = project_id if project_id
-        Tumugi::Plugin::BigqueryTableTarget.new(opts)
+        @output = Tumugi::Plugin::BigqueryTableTarget.new(opts)
       end
 
       def run
@@ -51,10 +53,10 @@ module Tumugi
           quote: quote,
           skip_leading_rows: skip_leading_rows,
           source_format: source_format,
-          project_id: _output.project_id,
+          project_id: output.project_id,
           wait: wait
         }
-        bq_client.load(_output.dataset_id, _output.table_id, src_uri, opts)
+        bq_client.load(output.dataset_id, output.table_id, src_uri, opts)
       end
 
       private
