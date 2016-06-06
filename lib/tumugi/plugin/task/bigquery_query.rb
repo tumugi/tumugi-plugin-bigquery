@@ -13,7 +13,7 @@ module Tumugi
       param :wait, type: :int, default: 60
 
       def output
-        Tumugi::Plugin::BigqueryTableTarget.new(project_id: project_id, dataset_id: dataset_id, table_id: table_id)
+        @output ||= Tumugi::Plugin::BigqueryTableTarget.new(project_id: project_id, dataset_id: dataset_id, table_id: table_id)
       end
 
       def run

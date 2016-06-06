@@ -65,7 +65,7 @@ module Tumugi
           job_project_id: job_project_id || client.project_id,
           wait: wait
         }
-        client.extract(dataset_id, table_id, _output.to_s, options)
+        client.extract(dataset_id, table_id, output.to_s, options)
       end
 
       def export_to_file_system(client)
@@ -78,7 +78,7 @@ module Tumugi
           project_id: client.project_id,
         }
 
-        _output.open('w') do |file|
+        output.open('w') do |file|
           file.puts field_names.join(field_delimiter) if destination_format == 'CSV' && print_header
           begin
             table_data_list = client.list_tabledata(dataset_id, table_id, options.merge(start_index: start_index, page_token: page_token))
