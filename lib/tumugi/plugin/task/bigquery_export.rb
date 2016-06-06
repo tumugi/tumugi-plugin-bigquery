@@ -1,5 +1,6 @@
 require 'json'
 require 'tumugi'
+require 'tumugi/plugin/file_system_target'
 require_relative '../target/bigquery_table'
 
 module Tumugi
@@ -25,7 +26,7 @@ module Tumugi
 
       def run
         unless output.is_a?(Tumugi::Plugin::FileSystemTarget)
-          raise Tumgi::TumguiError.new("BigqueryExportTask#output must be return a instance of Tumugi::Plugin::FileSystemTarget")
+          raise Tumugi::TumugiError.new("BigqueryExportTask#output must be return a instance of Tumugi::Plugin::FileSystemTarget")
         end
 
         client = Tumugi::Plugin::Bigquery::Client.new(config)
@@ -39,10 +40,10 @@ module Tumugi
           export_to_gcs(client)
         else
           if destination_format.upcase == 'AVRO'
-            raise Tumgi::TumguiError.new("destination_format='AVRO' is only supported when export to Google Cloud Storage")
+            raise Tumugi::TumugiError.new("destination_format='AVRO' is only supported when export to Google Cloud Storage")
           end
           if compression.upcase == 'GZIP'
-            logger.warn("compression parameter is ignored, it only supportd when export to Google Cloud Storage")
+            logger.warn("compression parameter is ignored, it's only supported when export to Google Cloud Storage")
           end
           export_to_file_system(client)
         end
