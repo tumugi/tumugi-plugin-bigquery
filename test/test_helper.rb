@@ -9,6 +9,8 @@ require 'test/unit/rr'
 require 'tumugi'
 require 'kura'
 
+Dir.mkdir('tmp') unless Dir.exist?('tmp')
+
 module Tumugi
   module Plugin
     module BigqueryTestHelper
@@ -52,6 +54,11 @@ end
 Tumugi.configure do |config|
   config.section('bigquery') do |section|
     section.project_id = credential[:project_id]
+    section.client_email = credential[:client_email]
+    section.private_key = credential[:private_key]
+  end
+
+  config.section('google_cloud_storage') do |section|
     section.client_email = credential[:client_email]
     section.private_key = credential[:private_key]
   end

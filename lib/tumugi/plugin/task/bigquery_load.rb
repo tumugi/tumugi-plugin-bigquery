@@ -35,12 +35,8 @@ module Tumugi
           raise Tumugi::ParameterError.new("Parameter 'schema' is required when 'mode' is 'truncate' or 'empty'") if schema.nil?
         end
 
-        object_id = key
-        unless object_id.start_with?('/')
-          object_id = "/#{key}"
-        end
-        source_uri = "gs://#{bucket}#{object_id}"
-        log "Source: #{source_uri}"
+        src_uri = "gs://#{bucket}#{normalize_path(key)}"
+        log "Source: #{src_uri}"
         log "Destination: #{output}"
 
         bq_client = output.client
@@ -58,7 +54,17 @@ module Tumugi
           project_id: _output.project_id,
           wait: wait
         }
-        bq_client.load(_output.dataset_id, _output.table_id, source_uri, opts)
+        bq_client.load(_output.dataset_id, _output.table_id, src_uri, opts)
+      end
+
+      private
+
+      def normalize_path(path)
+        unless path.start_with?('/')
+          "/#{path}"
+        else
+          path
+        end
       end
     end
   end

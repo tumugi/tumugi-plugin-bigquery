@@ -29,4 +29,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'test-unit-rr'
   spec.add_development_dependency 'coveralls'
   spec.add_development_dependency 'github_changelog_generator'
+  spec.add_development_dependency 'tumugi-plugin-google_cloud_storage'
 end

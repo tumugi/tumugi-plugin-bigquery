@@ -89,6 +89,13 @@ class Tumugi::Plugin::Bigquery::ClientTest < Test::Unit::TestCase
     @client.tables(TEST_DATASETS[0])
   end
 
+  test "#table" do
+    any_instance_of(Kura::Client) do |klass|
+      mock(klass).table(TEST_DATASETS[0], 'test', project_id: credential[:project_id]) {}
+    end
+    @client.table(TEST_DATASETS[0], 'test')
+  end
+
   test "#table_exist?" do
     assert_true(@client.table_exist?(TEST_DATASETS[0], 'test'))
     assert_false(@client.table_exist?(TEST_DATASETS[0], 'not_found'))

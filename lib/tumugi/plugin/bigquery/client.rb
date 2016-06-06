@@ -88,6 +88,12 @@ module Tumugi
           process_error(e)
         end
 
+        def table(dataset_id, table_id, project_id: nil)
+          @client.table(dataset_id, table_id, project_id: project_id || @project_id)
+        rescue Kura::ApiError => e
+          process_error(e)
+        end
+
         def table_exist?(dataset_id, table_id, project_id: nil)
           !@client.table(dataset_id, table_id, project_id: project_id || @project_id).nil?
         rescue Kura::ApiError => e
@@ -174,6 +180,7 @@ module Tumugi
                   use_query_cache: true,
                   user_defined_function_resources: nil,
                   project_id: nil,
+                  job_project_id: nil,
                   job_id: nil,
                   wait: nil,
                   dry_run: false,
@@ -186,7 +193,7 @@ module Tumugi
                         use_query_cache: use_query_cache,
                         user_defined_function_resources: user_defined_function_resources,
                         project_id: project_id || @project_id,
-                        job_project_id: project_id || @project_id,
+                        job_project_id: job_project_id || @project_id,
                         job_id: job_id,
                         wait: wait,
                         dry_run: dry_run,
@@ -207,6 +214,7 @@ module Tumugi
                  skip_leading_rows: 0,
                  source_format: "CSV",
                  project_id: nil,
+                 job_project_id: nil,
                  job_id: nil,
                  file: nil, wait: nil,
                  dry_run: false,
@@ -223,7 +231,7 @@ module Tumugi
                        skip_leading_rows: skip_leading_rows,
                        source_format: source_format,
                        project_id: project_id || @project_id,
-                       job_project_id: project_id || @project_id,
+                       job_project_id: job_project_id || @project_id,
                        job_id: job_id,
                        file: file,
                        wait: wait,
@@ -239,6 +247,7 @@ module Tumugi
                     field_delimiter: ",",
                     print_header: true,
                     project_id: nil,
+                    job_project_id: nil,
                     job_id: nil,
                     wait: nil,
                     dry_run: false,
@@ -249,7 +258,7 @@ module Tumugi
                           field_delimiter: field_delimiter,
                           print_header: print_header,
                           project_id: project_id || @project_id,
-                          job_project_id: project_id || @project_id,
+                          job_project_id: job_project_id || @project_id,
                           job_id: job_id,
                           wait: wait,
                           dry_run: dry_run,
@@ -262,6 +271,7 @@ module Tumugi
                  mode: :truncate,
                  src_project_id: nil,
                  dest_project_id: nil,
+                 job_project_id: dest_project_id,
                  job_id: nil,
                  wait: nil,
                  dry_run: false,
@@ -270,7 +280,7 @@ module Tumugi
                        mode: mode,
                        src_project_id: src_project_id || @project_id,
                        dest_project_id: dest_project_id || @project_id,
-                       job_project_id: dest_project_id || @project_id,
+                       job_project_id: job_project_id || @project_id,
                        job_id: job_id,
                        wait: wait,
                        dry_run: dry_run,
@@ -300,7 +310,7 @@ module Tumugi
         private
 
         def process_error(e)
-          raise Tumugi::Plugin::Bigquery::BigqueryError.new(e.reason, e.message)
+          raise Tumugi::Plugin::Bigquery::BigqueryError.new(e.message, e.reason)
         end
       end
     end
