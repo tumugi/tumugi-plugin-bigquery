@@ -14,9 +14,11 @@ class Tumugi::Plugin::Bigquery::ClientTest < Test::Unit::TestCase
       client = Tumugi::Plugin::Bigquery::Client.new(credential)
       assert_equal(credential[:project_id], client.project_id)
       assert_received(Kura) do |o|
-        o.client("project_id"   => credential[:project_id],
-                 "client_email" => credential[:client_email],
-                 "private_key"  => credential[:private_key])
+        o.client(project_id = {
+                  "project_id"   => credential[:project_id],
+                  "client_email" => credential[:client_email],
+                  "private_key"  => credential[:private_key] },
+                  client_email=nil, private_key=nil, {:http_options=>{:timeout=>60}})
       end
     end
 
@@ -32,9 +34,11 @@ class Tumugi::Plugin::Bigquery::ClientTest < Test::Unit::TestCase
       client = Tumugi::Plugin::Bigquery::Client.new(project_id: credential[:project_id])
       assert_equal(credential[:project_id], client.project_id)
       assert_received(Kura) do |o|
-        o.client("project_id"   => credential[:project_id],
-                 "client_email" => nil,
-                 "private_key"  => nil)
+        o.client(project_id = {
+                  "project_id"   => credential[:project_id],
+                  "client_email" => nil,
+                  "private_key"  => nil },
+                  client_email=nil, private_key=nil, {:http_options=>{:timeout=>60}})
       end
     end
   end

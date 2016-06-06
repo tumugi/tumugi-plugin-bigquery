@@ -3,6 +3,10 @@ Coveralls.wear!
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
+raise "ENV['PROJECT_ID'] must be set" unless ENV.key?('PROJECT_ID')
+raise "ENV['CLIENT_EMAIL'] must be set" unless ENV.key?('CLIENT_EMAIL')
+raise "ENV['PRIVATE_KEY'] must be set" unless ENV.key?('PRIVATE_KEY')
+
 require 'test/unit'
 require 'test/unit/rr'
 

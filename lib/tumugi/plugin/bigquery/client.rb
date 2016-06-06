@@ -20,7 +20,11 @@ module Tumugi
               @project_id = key['project_id']
             end
           else
-            @client = Kura.client("project_id" => @project_id, "client_email" => client_email, "private_key" => private_key)
+            # This method call style is needed for jruby.
+            # JRuby cannot handle correctly if method using keyword hash and last hash argument.
+            # see https://bugs.ruby-lang.org/issues/7529
+            @client = Kura.client(project_id = { "project_id" => @project_id, "client_email" => client_email, "private_key" => private_key },
+                                  client_email = nil, private_key = nil, {http_options: {timeout: 60}})
           end
         rescue Kura::ApiError => e
           process_error(e)
