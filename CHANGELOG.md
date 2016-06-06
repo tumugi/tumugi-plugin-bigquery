@@ -23,6 +23,8 @@
 
 **Merged pull requests:**
 
+- Cache output [\#26](https://github.com/tumugi/tumugi-plugin-bigquery/pull/26) ([hakobera](https://github.com/hakobera))
+- Prepare release for 0.2.0 [\#25](https://github.com/tumugi/tumugi-plugin-bigquery/pull/25) ([hakobera](https://github.com/hakobera))
 - Use Thor's invoke instead of system method [\#18](https://github.com/tumugi/tumugi-plugin-bigquery/pull/18) ([hakobera](https://github.com/hakobera))
 - Change test ruby version [\#17](https://github.com/tumugi/tumugi-plugin-bigquery/pull/17) ([hakobera](https://github.com/hakobera))
 - Change tumugi dependency version [\#16](https://github.com/tumugi/tumugi-plugin-bigquery/pull/16) ([hakobera](https://github.com/hakobera))
