@@ -98,4 +98,29 @@ class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
       assert_equal("in,255,kinghenryviii,1612\n", in_row)
     end
   end
+
+  test "raise error if output is not FileSystemTarget" do
+    task = @klass.new
+    task.instance_eval do
+      def output
+        Tumugi::Target.new
+      end
+    end
+    assert_raise(Tumugi::TumugiError) do
+      task.run
+    end
+  end
+
+  test "raise error if format is AVRO and not to export Google Cloud Storage" do
+    @klass.param_set :destination_format, 'AVRO'
+    task = @klass.new
+    task.instance_eval do
+      def output
+        Tumugi::Plugin::LocalFileTarget.new('tmp/export.csv')
+      end
+    end
+    assert_raise(Tumugi::TumugiError) do
+      task.run
+    end
+  end
 end
