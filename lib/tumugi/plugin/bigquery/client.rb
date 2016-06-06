@@ -13,18 +13,18 @@ module Tumugi
         def initialize(project_id: nil, client_email: nil, private_key: nil, private_key_file: nil)
           @project_id = project_id
 
-          if client_email.nil? && private_key.nil?
-            if private_key_file.nil?
-              raise Tumugi::Plugin::Bigquery::BigqueryError.new("You must provide 'private_key_file'", "No authentication info")
-            else
-              @client = Kura.client(private_key_file)
-              if @project_id.nil?
-                key = JSON.parse(File.read(private_key_file))
-                @project_id = key['project_id']
-              end
+          if client_email.nil? && private_key.nil? && !private_key_file.nil?
+            @client = Kura.client(private_key_file)
+            if @project_id.nil?
+              key = JSON.parse(File.read(private_key_file))
+              @project_id = key['project_id']
             end
           else
-            @client = Kura.client(@project_id, client_email, private_key)
+            # This method call style is needed for jruby.
+            # JRuby cannot handle correctly if method using keyword hash and last hash argument.
+            # see https://bugs.ruby-lang.org/issues/7529
+            @client = Kura.client(project_id = { "project_id" => @project_id, "client_email" => client_email, "private_key" => private_key },
+                                  client_email = nil, private_key = nil, {http_options: {timeout: 60}})
           end
         rescue Kura::ApiError => e
           process_error(e)
