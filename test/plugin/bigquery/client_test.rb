@@ -187,6 +187,7 @@ class Tumugi::Plugin::Bigquery::ClientTest < Test::Unit::TestCase
                         flatten_results: true,
                         priority: "INTERACTIVE",
                         use_query_cache: true,
+                        use_legacy_sql: true,
                         user_defined_function_resources: nil,
                         project_id: credential[:project_id],
                         job_project_id: credential[:project_id],

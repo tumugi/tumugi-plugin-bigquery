@@ -4,6 +4,14 @@ require 'tumugi/plugin/task/bigquery_query'
 class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
   include Tumugi::Plugin::BigqueryTestHelper
 
+  class ExistTarget < Tumugi::Target
+    def exist?; true;end
+  end
+
+  class NotExistTarget < Tumugi::Target
+    def exist?; false; end
+  end
+
   setup do
     @klass = Class.new(Tumugi::Plugin::BigqueryQueryTask)
     @klass.param_set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
@@ -19,6 +27,9 @@ class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
       assert_equal(TEST_DATASETS[0], task.dataset_id)
       assert_equal('test', task.table_id)
       assert_equal(ENV['PROJECT_ID'], task.project_id)
+      assert_equal('truncate', task.mode)
+      assert_equal(true, task.flatten_results)
+      assert_equal(true, task.use_legacy_sql)
       assert_equal(60, task.wait)
     end
 
@@ -37,6 +48,24 @@ class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
     end
   end
 
+  data({
+    "truncate mode with completed state and exist target" => ["truncate", ExistTarget, :completed, true],
+    "truncate mode with completed state and not exist target" => ["truncate", NotExistTarget, :completed, false],
+    "append mode with pending state and exist target" => ["append", ExistTarget, :pending, false],
+    "append mode with pending state and not exist target" => ["append", NotExistTarget, :pending, false],
+    "append mode with completed state and exist target" => ["append", ExistTarget, :completed, true],
+    "append mode with completed state and not exist target" => ["append", NotExistTarget, :completed, false],
+  })
+  test "#complted?" do |(mode, target_klass, state, expected)|
+    @klass.param_set :mode, mode
+    @klass.send(:define_method, :output) do
+      target_klass.new
+    end
+    task = @klass.new
+    task.state = state
+    assert_equal(expected, task.completed?)
+  end
+
   test "#output" do
     task = @klass.new
     output = task.output
@@ -52,5 +81,19 @@ class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
     task.run
     result = output.client.list_tabledata(output.dataset_id, task.table_id)
     assert_equal({:total_rows=>1, :next_token=>nil, :rows=>[{"cnt"=>"313797035"}]}, result)
+  end
+
+  test "#run with append mode" do
+    @klass.param_set :table_id, 'test_append'
+    @klass.param_set :mode, 'append'
+    task = @klass.new
+    output = task.output
+    task.run
+    result = output.client.list_tabledata(output.dataset_id, task.table_id)
+    assert_equal({:total_rows=>1, :next_token=>nil, :rows=>[{"cnt"=>"313797035"}]}, result)
+
+    task.run
+    result = output.client.list_tabledata(output.dataset_id, task.table_id)
+    assert_equal({:total_rows=>2, :next_token=>nil, :rows=>[{"cnt"=>"313797035"}, {"cnt"=>"313797035"}]}, result)
   end
 end
