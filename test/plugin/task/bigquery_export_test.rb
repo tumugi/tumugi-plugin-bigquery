@@ -22,6 +22,7 @@ class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
       assert_equal('tumugi-plugin-bigquery', task.job_project_id)
       assert_equal('samples', task.dataset_id)
       assert_equal('shakespeare', task.table_id)
+      assert_equal('CSV', task.destination_format)
       assert_equal('GZIP', task.compression)
       assert_equal(120, task.wait)
       assert_equal(10000, task.page_size)
@@ -71,7 +72,7 @@ class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
     end
   end
 
-  test "export to local file" do
+  test "export CSV to local file" do
     task = @klass.new
     task.instance_eval do
       def output
@@ -96,6 +97,31 @@ class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
       assert_equal(164657, count)
       assert_equal("word,word_count,corpus,corpus_date\n", header)
       assert_equal("in,255,kinghenryviii,1612\n", in_row)
+    end
+  end
+
+  test "export JSON to local file" do
+    @klass.param_set :destination_format, 'NEWLINE_DELIMITED_JSON'
+    task = @klass.new
+    task.instance_eval do
+      def output
+        Tumugi::Plugin::LocalFileTarget.new('tmp/export.json')
+      end
+    end
+    output = task.output
+    task.run
+    output.open("r") do |f|
+      count = 0
+      in_row = ''
+      while s = f.gets
+        json = JSON.parse(s)
+        count += 1
+        if json["word"] == "in"
+          in_row = s
+        end
+      end
+      assert_equal(164656, count)
+      assert_equal("#{JSON.generate({"word" => "in", "word_count" => "255", "corpus" => "kinghenryviii", "corpus_date" => "1612"})}\n", in_row)
     end
   end
 
