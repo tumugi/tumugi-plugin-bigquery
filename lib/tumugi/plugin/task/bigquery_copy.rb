@@ -12,14 +12,23 @@ module Tumugi
       param :dest_project_id, type: :string
       param :dest_dataset_id, type: :string, required: true
       param :dest_table_id, type: :string, required: true
+      param :force_copy, type: :bool, default: false
       param :wait, type: :int, default: 60
 
       def output
         return @output if @output
-        
+
         opts = { dataset_id: dest_dataset_id, table_id: dest_table_id }
         opts[:project_id] = dest_project_id if dest_project_id
         @output = Tumugi::Plugin::BigqueryTableTarget.new(opts)
+      end
+
+      def completed?
+        if force_copy && @state != :completed
+          false
+        else
+          super
+        end
       end
 
       def run
