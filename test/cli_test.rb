@@ -6,6 +6,7 @@ class Tumugi::Plugin::Bigquery::CLITest < Test::Unit::TestCase
     'copy' => ['copy.rb', 'task1'],
     'dataset' => ['dataset.rb', 'task1'],
     'query' => ['query.rb', 'task1'],
+    'query_append' => ['query_append.rb', 'task1'],
   }
 
   def invoke(file, task, options)
