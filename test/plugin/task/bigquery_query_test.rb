@@ -56,7 +56,7 @@ class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
     "append mode with completed state and exist target" => ["append", ExistTarget, :completed, true],
     "append mode with completed state and not exist target" => ["append", NotExistTarget, :completed, false],
   })
-  test "#complted?" do |(mode, target_klass, state, expected)|
+  test "#completed?" do |(mode, target_klass, state, expected)|
     @klass.param_set :mode, mode
     @klass.send(:define_method, :output) do
       target_klass.new
