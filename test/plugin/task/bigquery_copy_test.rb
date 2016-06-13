@@ -4,6 +4,14 @@ require 'tumugi/plugin/task/bigquery_copy'
 class Tumugi::Plugin::BigqueryCopyTaskTest < Test::Unit::TestCase
   include Tumugi::Plugin::BigqueryTestHelper
 
+  class ExistTarget < Tumugi::Target
+    def exist?; true;end
+  end
+
+  class NotExistTarget < Tumugi::Target
+    def exist?; false; end
+  end
+
   setup do
     @klass = Class.new(Tumugi::Plugin::BigqueryCopyTask)
     @klass.param_set :src_project_id, 'publicdata'
@@ -22,6 +30,7 @@ class Tumugi::Plugin::BigqueryCopyTaskTest < Test::Unit::TestCase
       assert_equal(nil, task.dest_project_id)
       assert_equal(TEST_DATASETS[0], task.dest_dataset_id)
       assert_equal('test', task.dest_table_id)
+      assert_equal(false, task.force_copy)
       assert_equal(60, task.wait)
     end
 
@@ -48,6 +57,24 @@ class Tumugi::Plugin::BigqueryCopyTaskTest < Test::Unit::TestCase
     assert_equal(ENV['PROJECT_ID'], output.project_id)
     assert_equal(Tumugi::Plugin::BigqueryTestHelper::TEST_DATASETS[0], output.dataset_id)
     assert_equal('test', output.table_id)
+  end
+
+  data({
+    "force_copy is false with completed state and exist target" => [false, ExistTarget, :completed, true],
+    "force_copy is false with completed state and not exist target" => [false, NotExistTarget, :completed, false],
+    "force_copy is true with pending state and exist target" => [true, ExistTarget, :pending, false],
+    "force_copy is true with pending state and not exist target" => [true, NotExistTarget, :pending, false],
+    "force_copy is true with completed state and exist target" => [true, ExistTarget, :completed, true],
+    "force_copy is true with completed state and not exist target" => [true, NotExistTarget, :completed, false],
+  })
+  test "#complted?" do |(force_copy, target_klass, state, expected)|
+    @klass.param_set :force_copy, force_copy
+    @klass.send(:define_method, :output) do
+      target_klass.new
+    end
+    task = @klass.new
+    task.state = state
+    assert_equal(expected, task.completed?)
   end
 
   test "#run" do
