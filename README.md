@@ -54,11 +54,26 @@ end
 
 #### Usage
 
+##### truncate mode (default)
+
 ```rb
 task :task1, type: :bigquery_query do
   param_set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
   param_set :dataset_id, 'test'
   param_set :table_id, "dest_table#{Time.now.to_i}"
+end
+```
+
+##### append mode
+
+If you set `mode` to `'append'`, query result append to existing table.
+
+```rb
+task :task1, type: :bigquery_query do
+  param_set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
+  param_set :dataset_id, 'test'
+  param_set :table_id, "dest_table#{Time.now.to_i}"
+  param_set :mode, 'append'
 end
 ```
 
@@ -70,12 +85,28 @@ end
 
 Copy `test.src_table` to `test.dest_table`.
 
+##### Normal usecase
+
 ```rb
 task :task1, type: :bigquery_copy do
   param_set :src_dataset_id, 'test'
   param_set :src_table_id, 'src_table'
   param_set :dest_dataset_id, 'test'
   param_set :dest_table_id, 'dest_table'
+end
+```
+
+##### force_copy
+
+If `force_copy` is `true`, copy operation always execute even if target table is existed. Data of target table is truncate.
+
+```rb
+task :task1, type: :bigquery_copy do
+  param_set :src_dataset_id, 'test'
+  param_set :src_table_id, 'src_table'
+  param_set :dest_dataset_id, 'test'
+  param_set :dest_table_id, 'dest_table'
+  param_set :force_copy, true
 end
 ```
 
