@@ -21,7 +21,7 @@ module Tumugi
       end
 
       def completed?
-        if mode.to_sym == :append && @state != :completed
+        if mode.to_sym == :append && !finished?
           false
         else
           super

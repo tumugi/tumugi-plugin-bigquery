@@ -24,7 +24,7 @@ module Tumugi
       end
 
       def completed?
-        if force_copy && @state != :completed
+        if force_copy && !finished?
           false
         else
           super
