@@ -73,7 +73,7 @@ class Tumugi::Plugin::BigqueryCopyTaskTest < Test::Unit::TestCase
       target_klass.new
     end
     task = @klass.new
-    task.state = state
+    task.instance_variable_set(:@state, state)
     assert_equal(expected, task.completed?)
   end
 
