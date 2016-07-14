@@ -1,7 +1,7 @@
 require_relative './test_helper'
 require 'tumugi/cli'
 
-class Tumugi::Plugin::Bigquery::CLITest < Test::Unit::TestCase
+class Tumugi::Plugin::Bigquery::CLITest < Tumugi::Test::TumugiTestCase
   examples = {
     'copy' => ['copy.rb', 'task1'],
     'dataset' => ['dataset.rb', 'task1'],
@@ -9,12 +9,16 @@ class Tumugi::Plugin::Bigquery::CLITest < Test::Unit::TestCase
     'query_append' => ['query_append.rb', 'task1'],
   }
 
-  def invoke(file, task, options)
-    Tumugi::CLI.new.invoke(:run_, [task], options.merge(file: "./examples/#{file}", quiet: true))
+  data do
+    data_set = {}
+    examples.each do |k, v|
+      [1, 2, 8].each do |n|
+        data_set["#{k}_workers_#{n}"] = (v.dup << n)
+      end
+    end
+    data_set
   end
-
-  data(examples)
-  test 'success' do |(file, task)|
-    assert_true(invoke(file, task, worker: 4, config: "./examples/tumugi_config_example.rb"))
+  test 'success' do |(file, task, worker)|
+    assert_run_success("examples/#{file}", task, workers: worker, config: "./examples/tumugi_config_example.rb")
   end
 end

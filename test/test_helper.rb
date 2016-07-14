@@ -11,6 +11,9 @@ require 'test/unit'
 require 'test/unit/rr'
 
 require 'tumugi'
+require 'tumugi/test/helper'
+include Tumugi::Test::Helpers
+
 require 'kura'
 
 Dir.mkdir('tmp') unless Dir.exist?('tmp')
