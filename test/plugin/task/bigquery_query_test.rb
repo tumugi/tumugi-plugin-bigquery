@@ -14,10 +14,10 @@ class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
 
   setup do
     @klass = Class.new(Tumugi::Plugin::BigqueryQueryTask)
-    @klass.param_set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
-    @klass.param_set :dataset_id, Tumugi::Plugin::BigqueryTestHelper::TEST_DATASETS[0]
-    @klass.param_set :table_id, 'test'
-    @klass.param_set :project_id, ENV['PROJECT_ID']
+    @klass.set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
+    @klass.set :dataset_id, Tumugi::Plugin::BigqueryTestHelper::TEST_DATASETS[0]
+    @klass.set :table_id, 'test'
+    @klass.set :project_id, ENV['PROJECT_ID']
   end
 
   sub_test_case "parameters" do
@@ -40,7 +40,7 @@ class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
     })
     test "raise error when required parameter is not set" do |params|
       params.each do |param|
-        @klass.param_set(param, nil)
+        @klass.set(param, nil)
       end
       assert_raise(Tumugi::ParameterError) do
         @klass.new
@@ -57,7 +57,7 @@ class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
     "append mode with completed state and not exist target" => ["append", NotExistTarget, :completed, false],
   })
   test "#completed?" do |(mode, target_klass, state, expected)|
-    @klass.param_set :mode, mode
+    @klass.set :mode, mode
     @klass.send(:define_method, :output) do
       target_klass.new
     end
@@ -84,8 +84,8 @@ class Tumugi::Plugin::BigqueryQueryTaskTest < Test::Unit::TestCase
   end
 
   test "#run with append mode" do
-    @klass.param_set :table_id, 'test_append'
-    @klass.param_set :mode, 'append'
+    @klass.set :table_id, 'test_append'
+    @klass.set :mode, 'append'
     task = @klass.new
     output = task.output
     task.run

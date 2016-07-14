@@ -6,12 +6,12 @@ class Tumugi::Plugin::BigqueryLoadTaskTest < Test::Unit::TestCase
 
   setup do
     @klass = Class.new(Tumugi::Plugin::BigqueryLoadTask)
-    @klass.param_set :bucket, 'tumugi-plugin-bigquery'
-    @klass.param_set :key, 'test.csv'
-    @klass.param_set :dataset_id, Tumugi::Plugin::BigqueryTestHelper::TEST_DATASETS[0]
-    @klass.param_set :table_id, 'load_test'
-    @klass.param_set :skip_leading_rows, 1
-    @klass.param_set :schema, [
+    @klass.set :bucket, 'tumugi-plugin-bigquery'
+    @klass.set :key, 'test.csv'
+    @klass.set :dataset_id, Tumugi::Plugin::BigqueryTestHelper::TEST_DATASETS[0]
+    @klass.set :table_id, 'load_test'
+    @klass.set :skip_leading_rows, 1
+    @klass.set :schema, [
       {
         name: 'row_number',
         type: 'INTEGER',
@@ -44,7 +44,7 @@ class Tumugi::Plugin::BigqueryLoadTaskTest < Test::Unit::TestCase
     })
     test "raise error when required parameter is not set" do |params|
       params.each do |param|
-        @klass.param_set(param, nil)
+        @klass.set(param, nil)
       end
       assert_raise(Tumugi::ParameterError) do
         @klass.new
