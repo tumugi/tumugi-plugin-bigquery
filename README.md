@@ -94,7 +94,7 @@ end
 | table_id        | string  | required  |            | destination table ID                                                                                                                          |
 | dataset_id      | string  | required  |            | destination dataset ID                                                                                                                        |
 | project_id      | string  | optional  |            | destination project ID                                                                                  |
-| mode            | string  | optional  | "truncate" | specifies the action that occurs if the destination table already exists. [see](#parameters_mode)                                             |
+| mode            | string  | optional  | "truncate" | specifies the action that occurs if the destination table already exists. [see](#mode)                                             |
 | flatten_results | boolean | optional  | true       | when you query nested data, BigQuery automatically flattens the table data or not. [see](https://cloud.google.com/bigquery/docs/data#flatten) |
 | use_legacy_sql  | bool    | optional  | true       | use legacy SQL syntanx for BigQuery or not                                                                                                    |
 | wait            | integer | optional  | 60         | wait time (seconds) for query execution                                                                                                       |
@@ -184,9 +184,9 @@ end
 | table_id              | string          | required                           |                     | destination table ID                                                                                                                         |
 | dataset_id            | string          | required                           |                     | destination dataset ID                                                                                                                       |
 | project_id            | string          | optional                           |                     | destination project ID                                                                                                                       |
-| schema                | array of object | required when mode is not "append" |                     | see [schema format](#parameters_schema)                                                                                                      |
-| mode                  | string          | optional                           | "append"            | specifies the action that occurs if the destination table already exists. [see](#parameters_mode)                                            |
-| source_format         | string          | optional                           | "CSV"               | source file format. [see](#parameters_format)                                                                                                |
+| schema                | array of object | required when mode is not "append" |                     | see [schema format](#schema)                                                                                                      |
+| mode                  | string          | optional                           | "append"            | specifies the action that occurs if the destination table already exists. [see](#mode)                                            |
+| source_format         | string          | optional                           | "CSV"               | source file format. [see](#format)                                                                                                |
 | ignore_unknown_values | bool            | optional                           | false               | indicates if BigQuery should allow extra values that are not represented in the table schema                                                 |
 | max_bad_records       | integer         | optional                           | 0                   | maximum number of bad records that BigQuery can ignore when running the job                                                                  |
 | field_delimiter       | string          | optional                           | ","                 | separator for fields in a CSV file. used only when source_format is "CSV"                                                                    |
@@ -270,7 +270,6 @@ end
 
 ## Common parameter value
 
-<a id="#parameters_mode"></a>
 ### mode
 
 | value    | description |
@@ -279,7 +278,6 @@ end
 | append   | If the table already exists, BigQuery appends the data to the table. |
 | empty    | If the table already exists and contains data, a 'duplicate' error is returned in the job result. |
 
-<a id="#parameters_format"></a>
 ### format
 
 | value                  | description                                |
@@ -288,7 +286,6 @@ end
 | NEWLINE_DELIMITED_JSON | Each line is JSON + new line               |
 | AVRO                   | [see](https://avro.apache.org/docs/1.2.0/) |
 
-<a id="#parameters_schema"></a>
 ### schema
 
 Format of `schema` parameter is array of nested object like below:
