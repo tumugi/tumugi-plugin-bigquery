@@ -5,10 +5,15 @@ class Tumugi::Plugin::Bigquery::CLITest < Tumugi::Test::TumugiTestCase
   examples = {
     'copy' => ['copy.rb', 'task1'],
     'dataset' => ['dataset.rb', 'task1'],
+    'export' => ['export.rb', 'task1'],
     'force_copy' => ['force_copy.rb', 'task1'],
     'query' => ['query.rb', 'task1'],
     'query_append' => ['query_append.rb', 'task1'],
   }
+
+  setup do
+    system('rm -rf tmp/*')
+  end
 
   data do
     data_set = {}
