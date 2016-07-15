@@ -13,7 +13,7 @@ module Tumugi
       param :dest_dataset_id, type: :string, required: true
       param :dest_table_id, type: :string, required: true
       param :force_copy, type: :bool, default: false
-      param :wait, type: :int, default: 60
+      param :wait, type: :integer, default: 60
 
       def output
         return @output if @output
