@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/tumugi/tumugi-plugin-bigquery.svg?branch=master)](https://travis-ci.org/tumugi/tumugi-plugin-bigquery) [![Code Climate](https://codeclimate.com/github/tumugi/tumugi-plugin-bigquery/badges/gpa.svg)](https://codeclimate.com/github/tumugi/tumugi-plugin-bigquery) [![Coverage Status](https://coveralls.io/repos/github/tumugi/tumugi-plugin-bigquery/badge.svg?branch=master)](https://coveralls.io/github/tumugi/tumugi-plugin-bigquery)  [![Gem Version](https://badge.fury.io/rb/tumugi-plugin-bigquery.svg)](https://badge.fury.io/rb/tumugi-plugin-bigquery)
 
-# tumugi-plugin-bigquery
+# Google BigQuery plugin for [tumugi](https://github.com/tumugi/tumugi)
 
-tumugi-plugin-bigquery is a plugin for integrate [Google BigQuery](https://cloud.google.com/bigquery/) and [Tumugi](https://github.com/tumugi/tumugi).
+tumugi-plugin-bigquery is a plugin for integrate [Google BigQuery](https://cloud.google.com/bigquery/) and [tumugi](https://github.com/tumugi/tumugi).
 
 ## Installation
 
@@ -12,17 +12,7 @@ Add this line to your application's Gemfile:
 gem 'tumugi-plugin-bigquery'
 ```
 
-And then execute:
-
-```sh
-$ bundle
-```
-
-Or install it yourself as:
-
-```sb
-$ gem install tumugi-plugin-bigquery
-```
+And then execute `bundle install`.
 
 ## Target
 
@@ -30,9 +20,46 @@ $ gem install tumugi-plugin-bigquery
 
 `Tumugi::Plugin::BigqueryDatasetTarget` is target for BigQuery dataset.
 
+#### Parameters
+
+| Name       | type   | required? | default | description                                                      |
+|------------|--------|-----------|---------|------------------------------------------------------------------|
+| dataset_id | string | required  |         | Dataset ID                                                       |
+| project_id | string | optional  |         | [Project](https://cloud.google.com/compute/docs/projects) ID     |
+
+#### Examples
+
+```rb
+task :task1 do
+  output target(:bigquery_dataset, dataset_id: "your_dataset_id")
+end
+```
+
+```rb
+task :task1 do
+  output target(:bigquery_dataset, project_id: "project_id", dataset_id: "dataset_id")
+end
+```
+
 #### Tumugi::Plugin::BigqueryTableTarget
 
 `Tumugi::Plugin::BigqueryDatasetTarget` is target for BigQuery table.
+
+#### Parameters
+
+| name       | type   | required? | default | description                                                      |
+|------------|--------|-----------|---------|------------------------------------------------------------------|
+| table_id   | string | required  |         | Table ID                                                         |
+| dataset_id | string | required  |         | Dataset ID                                                       |
+| project_id | string | optional  |         | [Project](https://cloud.google.com/compute/docs/projects) ID     |
+
+#### Examples
+
+```rb
+task :task1 do
+  output target(:bigquery_table, table_id: "table_id", dataset_id: "your_dataset_id")
+end
+```
 
 ## Task
 
@@ -40,11 +67,18 @@ $ gem install tumugi-plugin-bigquery
 
 `Tumugi::Plugin::BigqueryDatasetTask` is task to create a dataset.
 
-#### Usage
+#### Parameters
+
+| name       | type   | required? | default | description                                                      |
+|------------|--------|-----------|---------|------------------------------------------------------------------|
+| dataset_id | string | required  |         | Dataset ID                                                       |
+| project_id | string | optional  |         | [Project](https://cloud.google.com/compute/docs/projects) ID     |
+
+#### Examples
 
 ```rb
 task :task1, type: :bigquery_dataset do
-  param_set :dataset_id, 'test'
+  dataset_id 'test'
 end
 ```
 
@@ -52,28 +86,41 @@ end
 
 `Tumugi::Plugin::BigqueryQueryTask` is task to run `query` and save the result into the table which specified by parameter.
 
-#### Usage
+#### Parameters
+
+| name            | type    | required? | default    | description                                                                                                                                   |
+|-----------------|---------|-----------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| query           | string  | required  |            | query to execute                                                                                                                              |
+| table_id        | string  | required  |            | destination table ID                                                                                                                          |
+| dataset_id      | string  | required  |            | destination dataset ID                                                                                                                        |
+| project_id      | string  | optional  |            | destination project ID                                                                                  |
+| mode            | string  | optional  | "truncate" | specifies the action that occurs if the destination table already exists. [see](#parameters_mode)                                             |
+| flatten_results | boolean | optional  | true       | when you query nested data, BigQuery automatically flattens the table data or not. [see](https://cloud.google.com/bigquery/docs/data#flatten) |
+| use_legacy_sql  | bool    | optional  | true       | use legacy SQL syntanx for BigQuery or not                                                                                                    |
+| wait            | integer | optional  | 60         | wait time (seconds) for query execution                                                                                                       |
+
+#### Examples
 
 ##### truncate mode (default)
 
 ```rb
 task :task1, type: :bigquery_query do
-  param_set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
-  param_set :dataset_id, 'test'
-  param_set :table_id, "dest_table#{Time.now.to_i}"
+  query      "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
+  table_id   "dest_table#{Time.now.to_i}"
+  dataset_id "test"
 end
 ```
 
 ##### append mode
 
-If you set `mode` to `'append'`, query result append to existing table.
+If you set `mode` to `append`, query result append to existing table.
 
 ```rb
 task :task1, type: :bigquery_query do
-  param_set :query, "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
-  param_set :dataset_id, 'test'
-  param_set :table_id, "dest_table#{Time.now.to_i}"
-  param_set :mode, 'append'
+  query      "SELECT COUNT(*) AS cnt FROM [bigquery-public-data:samples.wikipedia]"
+  table_id   "dest_table#{Time.now.to_i}"
+  dataset_id "test"
+  mode       "append"
 end
 ```
 
@@ -81,7 +128,20 @@ end
 
 `Tumugi::Plugin::BigqueryCopyTask` is task to copy table which specified by parameter.
 
-#### Usage
+#### Parameters
+
+| name            | type   | required? | default | description                                             |
+|-----------------|--------|-----------|---------|---------------------------------------------------------|
+| src_table_id    | string | required  |         | source table ID                                         |
+| src_dataset_id  | string | required  |         | source dataset ID                                       |
+| src_project_id  | string | optional  |         | source project ID                                       |
+| dest_table_id   | string | required  |         | destination table ID                                    |
+| dest_dataset_id | string | required  |         | destination dataset ID                                  |
+| dest_project_id | string | optional  |         | destination project ID                                  |
+| force_copy      | bool   | optional  | false   | force copy when destination table already exists or not |
+| wait            | integer| optional  | 60      | wait time (seconds) for query execution                 |
+
+#### Examples
 
 Copy `test.src_table` to `test.dest_table`.
 
@@ -89,24 +149,25 @@ Copy `test.src_table` to `test.dest_table`.
 
 ```rb
 task :task1, type: :bigquery_copy do
-  param_set :src_dataset_id, 'test'
-  param_set :src_table_id, 'src_table'
-  param_set :dest_dataset_id, 'test'
-  param_set :dest_table_id, 'dest_table'
+  src_table_id    "src_table"
+  src_dataset_id  "test"
+  dest_table_id   "dest_table"
+  dest_dataset_id "test"
 end
 ```
 
 ##### force_copy
 
-If `force_copy` is `true`, copy operation always execute even if target table is existed. Data of target table is truncate.
+If `force_copy` is `true`, copy operation always execute even if destination table exists.
+This means data of destination table data is deleted, so be carefull to enable this parameter.
 
 ```rb
 task :task1, type: :bigquery_copy do
-  param_set :src_dataset_id, 'test'
-  param_set :src_table_id, 'src_table'
-  param_set :dest_dataset_id, 'test'
-  param_set :dest_table_id, 'dest_table'
-  param_set :force_copy, true
+  src_table_id    "src_table"
+  src_dataset_id  "test"
+  dest_table_id   "dest_table"
+  dest_dataset_id "test"
+  force_copy      true
 end
 ```
 
@@ -114,25 +175,98 @@ end
 
 `Tumugi::Plugin::BigqueryLoadTask` is task to load structured data from GCS into BigQuery.
 
-#### Usage
+#### Parameters
+
+| name                  | type            | required?                          | default             | description                                                                                                                                  |
+|-----------------------|-----------------|------------------------------------|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| bucket                | string          | required                           |                     | source GCS bucket name                                                                                                                       |
+| key                   | string          | required                           |                     | source path of file like "/path/to/file.csv"                                                                                                 |
+| table_id              | string          | required                           |                     | destination table ID                                                                                                                         |
+| dataset_id            | string          | required                           |                     | destination dataset ID                                                                                                                       |
+| project_id            | string          | optional                           |                     | destination project ID                                                                                                                       |
+| schema                | array of object | required when mode is not "append" |                     | see [schema format](#parameters_schema)                                                                                                      |
+| mode                  | string          | optional                           | "append"            | specifies the action that occurs if the destination table already exists. [see](#parameters_mode)                                            |
+| source_format         | string          | optional                           | "CSV"               | source file format. [see](#parameters_format)                                                                                                |
+| ignore_unknown_values | bool            | optional                           | false               | indicates if BigQuery should allow extra values that are not represented in the table schema                                                 |
+| max_bad_records       | integer         | optional                           | 0                   | maximum number of bad records that BigQuery can ignore when running the job                                                                  |
+| field_delimiter       | string          | optional                           | ","                 | separator for fields in a CSV file. used only when source_format is "CSV"                                                                    |
+| allow_jagged_rows     | bool            | optional                           | false               | accept rows that are missing trailing optional columns. The missing values are treated as null. used only when source_format is "CSV"        |
+| allow_quoted_newlines | bool            | optional                           | false               | indicates if BigQuery should allow quoted data sections that contain newline characters in a CSV file. used only when source_format is "CSV" |
+| quote                 | string          | optional                           | "\"" (double-quote) | value that is used to quote data sections in a CSV file. used only when source_format is "CSV"                                               |
+| skip_leading_rows     | integer         | optional                           | 0                   | .number of rows at the top of a CSV file that BigQuery will skip when loading the data. used only when source_format is "CSV"                |
+| wait                  | integer         | optional                           | 60                  | wait time (seconds) for query execution                                                                                                      |
+#### Example
 
 Load `gs://test_bucket/load_data.csv` into `dest_project:dest_dataset.dest_table`
 
 ```rb
 task :task1, type: :bigquery_load do
-  param_set :bucket, 'test_bucket'
-  param_set :key, 'load_data.csv'
-  param_set :project_id, 'dest_project'
-  param_set :datset_id, 'dest_dataset'
-  param_set :table_id, 'dest_table'
+  bucket     "test_bucket"
+  key        "load_data.csv"
+  table_id   "dest_table"
+  datset_id  "dest_dataset"
+  project_id "dest_project"
 end
 ```
 
-### Config Section
+## Common parameter value
+
+<a id="#parameters_mode"></a>
+### mode
+
+| value    | description |
+|----------|-------------|
+| truncate | If the table already exists, BigQuery overwrites the table data. |
+| append   | If the table already exists, BigQuery appends the data to the table. |
+| empty    | If the table already exists and contains data, a 'duplicate' error is returned in the job result. |
+
+<a id="#parameters_format"></a>
+### format
+
+| value                  | description                                |
+|------------------------|--------------------------------------------|
+| CSV                    | CSV                                        |
+| NEWLINE_DELIMITED_JSON | Each line is JSON + new line               |
+| AVRO                   | [see](https://avro.apache.org/docs/1.2.0/) |
+
+<a id="#parameters_schema"></a>
+### schema
+
+Format of `schema` parameter is array of nested object like below:
+
+```js
+[
+  {
+    "name": "column1",
+    "type": "string"
+  },
+  {
+    "name": "column2",
+    "type": "integer",
+    "mode": "repeated"
+  },
+  {
+    "name": "record1",
+    "type": "record",
+    "fields": [
+      {
+        "name": "key1",
+        "type": "integer",
+      },
+      {
+        "name": "key2",
+        "type": "integer"
+      }
+    ]
+  }
+]
+```
+
+## Config Section
 
 tumugi-plugin-bigquery provide config section named "bigquery" which can specified BigQuery autenticaion info.
 
-#### Authenticate by client_email and private_key
+### Authenticate by client_email and private_key
 
 ```rb
 Tumugi.configure do |config|
@@ -144,7 +278,7 @@ Tumugi.configure do |config|
 end
 ```
 
-#### Authenticate by JSON key file
+### Authenticate by JSON key file
 
 ```rb
 Tumugi.configure do |config|
