@@ -6,8 +6,8 @@ class Tumugi::Plugin::BigqueryDatasetTaskTest < Test::Unit::TestCase
 
   setup do
     @klass = Class.new(Tumugi::Plugin::BigqueryDatasetTask)
-    @klass.param_set :dataset_id, Tumugi::Plugin::BigqueryTestHelper::TEST_DATASETS[0]
-    @klass.param_set :project_id, ENV['PROJECT_ID']
+    @klass.set :dataset_id, Tumugi::Plugin::BigqueryTestHelper::TEST_DATASETS[0]
+    @klass.set :project_id, ENV['PROJECT_ID']
   end
 
   sub_test_case "parameters" do
@@ -22,7 +22,7 @@ class Tumugi::Plugin::BigqueryDatasetTaskTest < Test::Unit::TestCase
     })
     test "raise error when required parameter is not set" do |params|
       params.each do |param|
-        @klass.param_set(param, nil)
+        @klass.set(param, nil)
       end
       assert_raise(Tumugi::ParameterError) do
         @klass.new

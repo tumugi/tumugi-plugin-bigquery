@@ -20,14 +20,15 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "tumugi", ">= 0.5.1"
+  spec.add_runtime_dependency "tumugi", ">= 0.6.1"
   spec.add_runtime_dependency "kura", "~> 0.2.17"
+  spec.add_runtime_dependency "google-api-client", "0.9.9"
+  spec.add_runtime_dependency "json", "~> 1.8.3" # json 2.0 does not work with JRuby + MultiJson
 
   spec.add_development_dependency 'bundler', '~> 1.11'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'test-unit', '~> 3.1'
   spec.add_development_dependency 'test-unit-rr'
   spec.add_development_dependency 'coveralls'
-  spec.add_development_dependency 'github_changelog_generator'
   spec.add_development_dependency 'tumugi-plugin-google_cloud_storage'
 end

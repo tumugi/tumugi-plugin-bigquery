@@ -14,11 +14,11 @@ class Tumugi::Plugin::BigqueryCopyTaskTest < Test::Unit::TestCase
 
   setup do
     @klass = Class.new(Tumugi::Plugin::BigqueryCopyTask)
-    @klass.param_set :src_project_id, 'publicdata'
-    @klass.param_set :src_dataset_id, 'samples'
-    @klass.param_set :src_table_id, 'shakespeare'
-    @klass.param_set :dest_dataset_id, Tumugi::Plugin::BigqueryTestHelper::TEST_DATASETS[0]
-    @klass.param_set :dest_table_id, 'test'
+    @klass.set :src_project_id, 'publicdata'
+    @klass.set :src_dataset_id, 'samples'
+    @klass.set :src_table_id, 'shakespeare'
+    @klass.set :dest_dataset_id, Tumugi::Plugin::BigqueryTestHelper::TEST_DATASETS[0]
+    @klass.set :dest_table_id, 'test'
   end
 
   sub_test_case "parameters" do
@@ -42,7 +42,7 @@ class Tumugi::Plugin::BigqueryCopyTaskTest < Test::Unit::TestCase
     })
     test "raise error when required parameter is not set" do |params|
       params.each do |param|
-        @klass.param_set(param, nil)
+        @klass.set(param, nil)
       end
       assert_raise(Tumugi::ParameterError) do
         @klass.new
@@ -68,12 +68,12 @@ class Tumugi::Plugin::BigqueryCopyTaskTest < Test::Unit::TestCase
     "force_copy is true with completed state and not exist target" => [true, NotExistTarget, :completed, false],
   })
   test "#complted?" do |(force_copy, target_klass, state, expected)|
-    @klass.param_set :force_copy, force_copy
+    @klass.set :force_copy, force_copy
     @klass.send(:define_method, :output) do
       target_klass.new
     end
     task = @klass.new
-    task.state = state
+    task.instance_variable_set(:@state, state)
     assert_equal(expected, task.completed?)
   end
 

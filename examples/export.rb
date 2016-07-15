@@ -1,8 +1,9 @@
-task :task1 do
+task :task1, type: :bigquery_export do
+  dataset_id  { input.dataset_id }
+  table_id    { input.table_id }
+
   requires :task2
-  run do
-    log input.table_name
-  end
+  output target(:local_file, "tmp/export.csv")
 end
 
 task :task2, type: :bigquery_query do

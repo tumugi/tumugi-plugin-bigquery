@@ -8,11 +8,11 @@ class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
 
   setup do
     @klass = Class.new(Tumugi::Plugin::BigqueryExportTask)
-    @klass.param_set :project_id, 'bigquery-public-data'
-    @klass.param_set :job_project_id, 'tumugi-plugin-bigquery'
-    @klass.param_set :dataset_id, 'samples'
-    @klass.param_set :table_id, 'shakespeare'
-    @klass.param_set :compression, 'GZIP'
+    @klass.set :project_id, 'bigquery-public-data'
+    @klass.set :job_project_id, 'tumugi-plugin-bigquery'
+    @klass.set :dataset_id, 'samples'
+    @klass.set :table_id, 'shakespeare'
+    @klass.set :compression, 'GZIP'
   end
 
   sub_test_case "parameters" do
@@ -34,7 +34,7 @@ class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
     })
     test "raise error when required parameter is not set" do |params|
       params.each do |param|
-        @klass.param_set(param, nil)
+        @klass.set(param, nil)
       end
       assert_raise(Tumugi::ParameterError) do
         @klass.new
@@ -138,7 +138,7 @@ class Tumugi::Plugin::BigqueryExportTaskTest < Test::Unit::TestCase
   end
 
   test "raise error if format is AVRO and not to export Google Cloud Storage" do
-    @klass.param_set :destination_format, 'AVRO'
+    @klass.set :destination_format, 'AVRO'
     task = @klass.new
     task.instance_eval do
       def output

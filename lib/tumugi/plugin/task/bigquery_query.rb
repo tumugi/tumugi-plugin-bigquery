@@ -13,15 +13,14 @@ module Tumugi
       param :mode, type: :string, default: 'truncate' # append, empty
       param :flatten_results, type: :bool, default: true
       param :use_legacy_sql, type: :bool, default: true
-
-      param :wait, type: :int, default: 60
+      param :wait, type: :integer, default: 60
 
       def output
         @output ||= Tumugi::Plugin::BigqueryTableTarget.new(project_id: project_id, dataset_id: dataset_id, table_id: table_id)
       end
 
       def completed?
-        if mode.to_sym == :append && @state != :completed
+        if mode.to_sym == :append && !finished?
           false
         else
           super

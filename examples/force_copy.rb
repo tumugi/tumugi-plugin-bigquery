@@ -3,7 +3,8 @@ task :task1, type: :bigquery_copy do
   src_dataset_id  { input.dataset_id }
   src_table_id    { input.table_id }
   dest_dataset_id "test"
-  dest_table_id   { "dest_table_#{Time.now.to_i}" }
+  dest_table_id   "dest_table_1"
+  force_copy      true
 
   requires :task2
 end
