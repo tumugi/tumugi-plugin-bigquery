@@ -195,6 +195,7 @@ end
 | quote                 | string          | optional                           | "\"" (double-quote) | value that is used to quote data sections in a CSV file. used only when source_format is "CSV"                                               |
 | skip_leading_rows     | integer         | optional                           | 0                   | .number of rows at the top of a CSV file that BigQuery will skip when loading the data. used only when source_format is "CSV"                |
 | wait                  | integer         | optional                           | 60                  | wait time (seconds) for query execution                                                                                                      |
+
 #### Example
 
 Load `gs://test_bucket/load_data.csv` into `dest_project:dest_dataset.dest_table`
@@ -206,6 +207,64 @@ task :task1, type: :bigquery_load do
   table_id   "dest_table"
   datset_id  "dest_dataset"
   project_id "dest_project"
+end
+```
+
+### Tumugi::Plugin::BigqueryExportTask
+
+`Tumugi::Plugin::BigqueryExportTask` is task to export BigQuery table.
+
+#### Parameters
+
+| name               | type    | required? | default            | description                                                                         |
+|--------------------|---------|-----------|--------------------|-------------------------------------------------------------------------------------|
+| project_id         | string  | optional  |                    | source project ID                                                                   |
+| job_project_id     | string  | optional  | same as project_id | job running project ID                                                              |
+| dataset_id         | string  | required  | true               | source dataset ID                                                                   |
+| table_id           | string  | required  | true               | source table ID                                                                     |
+| compression        | string  | optional  | "NONE"             | [destination file compression]. "NONE": no compression, "GZIP": compression by gzip |
+| destination_format | string  | optional  | "CSV"              | [destination file format](#format)                                                  |
+| field_delimiter    | string  | optional  | ","                | separator for fields in a CSV file. used only when destination_format is "CSV"      |
+| print_header       | bool    | optional  | true               | print header row in a CSV file. used only when destination_format is "CSV"          |
+| page_size          | integer | optional  | 10000              | Fetch number of rows in one request                                                 |
+| wait               | integer | optional  | 60                 | wait time (seconds) for query execution                                             |
+
+#### Examples
+
+##### Export `src_dataset.src_table` to local file `data.csv`
+
+```rb
+task :task1, type: :bigquery_export do
+  table_id   "src_table"
+  datset_id  "src_dataset"
+
+  output target(:local_file, "data.csv")
+end
+```
+
+##### Export `src_dataset.src_table` to Google Cloud Storage
+
+You need [tumugi-plugin-google_cloud_storage](https://github.com/tumugi/tumugi-plugin-google_cloud_storage)
+
+```rb
+task :task1, type: :bigquery_export do
+  table_id   "src_table"
+  datset_id  "src_dataset"
+
+  output target(:google_cloud_storage_file, bucket: "bucket", key: "data.csv")
+end
+```
+
+##### Export `src_dataset.src_table` to Google Drive
+
+You need [tumugi-plugin-google_drive](https://github.com/tumugi/tumugi-plugin-google_drive)
+
+```rb
+task :task1, type: :bigquery_export do
+  table_id   "src_table"
+  datset_id  "src_dataset"
+
+  output target(:google_drive_file, name: "data.csv")
 end
 ```
 
