@@ -22,7 +22,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "tumugi", ">= 0.6.1"
   spec.add_runtime_dependency "kura", "~> 0.2.17"
-  spec.add_runtime_dependency "google-api-client", "0.9.9"
   spec.add_runtime_dependency "json", "~> 1.8.3" # json 2.0 does not work with JRuby + MultiJson
 
   spec.add_development_dependency 'bundler', '~> 1.11'
