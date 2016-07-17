@@ -1,7 +1,29 @@
 # Change Log
 
-## [0.2.0](https://github.com/tumugi/tumugi-plugin-bigquery/tree/0.2.0) (2016-06-06)
-[Full Changelog](https://github.com/tumugi/tumugi-plugin-bigquery/compare/v0.1.0...0.2.0)
+## [v0.3.0](https://github.com/tumugi/tumugi-plugin-bigquery/tree/v0.3.0) (2016-07-16)
+[Full Changelog](https://github.com/tumugi/tumugi-plugin-bigquery/compare/v0.2.0...v0.3.0)
+
+**Implemented enhancements:**
+
+- Support flatten\_result flag [\#30](https://github.com/tumugi/tumugi-plugin-bigquery/issues/30)
+- Support mode parameter for BigqueryQueryTask [\#28](https://github.com/tumugi/tumugi-plugin-bigquery/issues/28)
+- Support standard SQL [\#20](https://github.com/tumugi/tumugi-plugin-bigquery/issues/20)
+- Support force copy table [\#7](https://github.com/tumugi/tumugi-plugin-bigquery/issues/7)
+
+**Fixed bugs:**
+
+- Fix JSON export for FileSystemTarget does not work [\#31](https://github.com/tumugi/tumugi-plugin-bigquery/issues/31)
+
+**Merged pull requests:**
+
+- Update tumugi to 0.6 [\#35](https://github.com/tumugi/tumugi-plugin-bigquery/pull/35) ([hakobera](https://github.com/hakobera))
+- Add JSON export test [\#34](https://github.com/tumugi/tumugi-plugin-bigquery/pull/34) ([hakobera](https://github.com/hakobera))
+- Fix misc [\#33](https://github.com/tumugi/tumugi-plugin-bigquery/pull/33) ([hakobera](https://github.com/hakobera))
+- Support force\_copy parameter for bigquery\_copy task [\#32](https://github.com/tumugi/tumugi-plugin-bigquery/pull/32) ([hakobera](https://github.com/hakobera))
+- Support append mode query and use legacy SQL flag [\#29](https://github.com/tumugi/tumugi-plugin-bigquery/pull/29) ([hakobera](https://github.com/hakobera))
+
+## [v0.2.0](https://github.com/tumugi/tumugi-plugin-bigquery/tree/v0.2.0) (2016-06-06)
+[Full Changelog](https://github.com/tumugi/tumugi-plugin-bigquery/compare/v0.1.0...v0.2.0)
 
 **Implemented enhancements:**
 
@@ -23,8 +45,10 @@
 
 **Merged pull requests:**
 
-- Cache output [\#26](https://github.com/tumugi/tumugi-plugin-bigquery/pull/26) ([hakobera](https://github.com/hakobera))
+- Update changelog [\#27](https://github.com/tumugi/tumugi-plugin-bigquery/pull/27) ([hakobera](https://github.com/hakobera))
 - Prepare release for 0.2.0 [\#25](https://github.com/tumugi/tumugi-plugin-bigquery/pull/25) ([hakobera](https://github.com/hakobera))
+- Add rubygems badge [\#3](https://github.com/tumugi/tumugi-plugin-bigquery/pull/3) ([hakobera](https://github.com/hakobera))
+- Cache output [\#26](https://github.com/tumugi/tumugi-plugin-bigquery/pull/26) ([hakobera](https://github.com/hakobera))
 - Use Thor's invoke instead of system method [\#18](https://github.com/tumugi/tumugi-plugin-bigquery/pull/18) ([hakobera](https://github.com/hakobera))
 - Change test ruby version [\#17](https://github.com/tumugi/tumugi-plugin-bigquery/pull/17) ([hakobera](https://github.com/hakobera))
 - Change tumugi dependency version [\#16](https://github.com/tumugi/tumugi-plugin-bigquery/pull/16) ([hakobera](https://github.com/hakobera))
@@ -32,7 +56,6 @@
 - Add BigqueryLoadTask [\#12](https://github.com/tumugi/tumugi-plugin-bigquery/pull/12) ([hakobera](https://github.com/hakobera))
 - Update dependency gems [\#11](https://github.com/tumugi/tumugi-plugin-bigquery/pull/11) ([hakobera](https://github.com/hakobera))
 - Update tumugi to v0.5.0 [\#9](https://github.com/tumugi/tumugi-plugin-bigquery/pull/9) ([hakobera](https://github.com/hakobera))
-- Add rubygems badge [\#3](https://github.com/tumugi/tumugi-plugin-bigquery/pull/3) ([hakobera](https://github.com/hakobera))
 
 ## [v0.1.0](https://github.com/tumugi/tumugi-plugin-bigquery/tree/v0.1.0) (2016-05-16)
 **Fixed bugs:**
