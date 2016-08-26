@@ -202,11 +202,11 @@ Load `gs://test_bucket/load_data.csv` into `dest_project:dest_dataset.dest_table
 
 ```rb
 task :task1, type: :bigquery_load do
-  bucket     "test_bucket"
-  key        "load_data.csv"
-  table_id   "dest_table"
-  datset_id  "dest_dataset"
-  project_id "dest_project"
+  bucket      "test_bucket"
+  key         "load_data.csv"
+  table_id    "dest_table"
+  dataset_id  "dest_dataset"
+  project_id  "dest_project"
 end
 ```
 
@@ -235,8 +235,8 @@ end
 
 ```rb
 task :task1, type: :bigquery_export do
-  table_id   "src_table"
-  datset_id  "src_dataset"
+  table_id    "src_table"
+  dataset_id  "src_dataset"
 
   output target(:local_file, "data.csv")
 end
@@ -248,8 +248,8 @@ You need [tumugi-plugin-google_cloud_storage](https://github.com/tumugi/tumugi-p
 
 ```rb
 task :task1, type: :bigquery_export do
-  table_id   "src_table"
-  datset_id  "src_dataset"
+  table_id    "src_table"
+  dataset_id  "src_dataset"
 
   output target(:google_cloud_storage_file, bucket: "bucket", key: "data.csv")
 end
@@ -261,8 +261,8 @@ You need [tumugi-plugin-google_drive](https://github.com/tumugi/tumugi-plugin-go
 
 ```rb
 task :task1, type: :bigquery_export do
-  table_id   "src_table"
-  datset_id  "src_dataset"
+  table_id    "src_table"
+  dataset_id  "src_dataset"
 
   output target(:google_drive_file, name: "data.csv")
 end
